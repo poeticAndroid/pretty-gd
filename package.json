@@ -7,18 +7,12 @@
     "vscode": "^1.70.0"
   },
   "categories": [
-    "Other"
+    "Formatters"
   ],
   "activationEvents": [
-    "onCommand:pretty-gd.helloWorld"
+    "onLanguage:gdscript"
   ],
   "main": "./extension.js",
-  "contributes": {
-    "commands": [{
-      "command": "pretty-gd.helloWorld",
-      "title": "Hello World"
-    }]
-  },
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",

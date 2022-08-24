@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-const vscode = require('vscode');
+const vscode = require('vscode')
+const tokenize = require("./tokenizer")
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -9,28 +10,48 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "pretty-gd" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('pretty-gd.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello mothafuckas! from pretty.gd!');
-	});
-
-	context.subscriptions.push(disposable);
+  context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider("gdscript", new GdDocumentFormatter()))
 }
 
 // this method is called when your extension is deactivated
 function deactivate() { }
 
+class GdDocumentFormatter {
+  provideDocumentFormattingEdits(document) {
+    vscode.window.showInformationMessage('Formatting! from pretty.gd!')
+    let edits = []
+    let indentLvl = 0
+    let oneIndent
+    let thisIndent
+    let inString
+    console.log(document.lineCount)
+    for (let lineNum = 0; lineNum < document.lineCount; lineNum++) {
+      let line = document.lineAt(lineNum)
+      if (inString) {
+        if (line.text.includes("\"\"\"")) inString = false
+        continue
+      }
+      let tokens = tokenize(line.text)
+      if (!oneIndent) oneIndent = tokens[0]
+      if (oneIndent) {
+        indentLvl = tokens[0].length / oneIndent.length
+      }
+      thisIndent = ""
+      for (let i = 0; i < indentLvl; i++) {
+        thisIndent += oneIndent
+      }
+      tokens.shift()
+      console.log(tokens)
+      let newLine = thisIndent + tokens.join("").trimEnd()
+      edits.push(vscode.TextEdit.replace(line.range, newLine))
+      let lastToken = tokens.pop()
+      if (lastToken && lastToken.slice(0, 3) === "\"\"\"" && !lastToken.includes("\"\"\"", 3)) inString = true
+    }
+    return edits
+  }
+}
+
 module.exports = {
-	activate,
-	deactivate
+  activate,
+  deactivate
 }
