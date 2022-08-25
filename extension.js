@@ -42,7 +42,7 @@ class GdDocumentFormatter {
       }
       tokens.shift()
       console.log(tokens)
-      let newLine = thisIndent + tokens.join("").trimEnd()
+      let newLine = (thisIndent + tokens.join("")).trimEnd()
       edits.push(vscode.TextEdit.replace(line.range, newLine))
       let lastToken = tokens.pop()
       if (lastToken && lastToken.slice(0, 3) === "\"\"\"" && !lastToken.includes("\"\"\"", 3)) inString = true

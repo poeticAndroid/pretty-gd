@@ -11,6 +11,13 @@ function tokenize(_input) {
     if (char === "#") {
       tokens.push((lastTokenType ? " " : "") + input.slice(pos))
       pos = input.length
+    } else if (char === "-" && input.charAt(pos + 1).match(/[0-9\.a-z_A-Z]/)) {
+      pos++
+      if (input.charAt(pos).match(/[a-z_A-Z]/)) {
+        tokens.push("-" + readName())
+      } else {
+        tokens.push("-" + readNumber())
+      }
     } else if (char.match(/[a-z_A-Z]/)) {
       tokens.push(readName())
     } else if (char.match(/[0-9]/)) {
@@ -62,7 +69,7 @@ function readSymbol() {
     token += input.charAt(pos++)
   }
   token += " "
-  if ([".", ",", "@", "$"].includes(token.trim().charAt(0))) {
+  if ([".", ",", "@", "$", ":"].includes(token.trim().charAt(0))) {
     token = token.trim()
   }
   if (token === ",") {
