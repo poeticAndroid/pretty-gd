@@ -50,7 +50,13 @@ function readName() {
   while (input.charAt(pos).match(/[a-z_A-Z0-9]/)) {
     token += input.charAt(pos++)
   }
-  lastTokenType = "name"
+  if (keywords.includes(token.trim())) {
+    if (lastTokenType && lastTokenType !== "keyword") token = " " + token.trim()
+    token += " "
+    lastTokenType = "keyword"
+  } else {
+    lastTokenType = "name"
+  }
   return token
 }
 function readNumber() {
@@ -104,4 +110,5 @@ function readString() {
   return token
 }
 
+const keywords = ["if", "elif", "else", "for", "while", "match", "break", "continue", "pass", "return", "class", "class_name", "extends", "is", "as", "self", "tool", "signal", "func", "static", "const", "enum", "var", "onready", "export", "setget", "breakpoint", "preload", "yield", "assert", "remote", "master", "puppet", "remotesync", "mastersync", "puppetsync"]
 module.exports = tokenize
