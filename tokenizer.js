@@ -4,7 +4,6 @@ function tokenize(_input) {
   pos = 0
   input = _input
   lastTokenType = null
-  console.log("tokenizing", input)
   let tokens = [readWhitespace()]
   while (pos < input.length) {
     let char = input.charAt(pos)

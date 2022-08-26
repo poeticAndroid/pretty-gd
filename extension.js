@@ -18,13 +18,11 @@ function deactivate() { }
 
 class GdDocumentFormatter {
   provideDocumentFormattingEdits(document) {
-    vscode.window.showInformationMessage('Formatting! from pretty.gd!')
     let edits = []
     let indentLvl = 0
     let oneIndent
     let thisIndent
     let inString
-    console.log(document.lineCount)
     for (let lineNum = 0; lineNum < document.lineCount; lineNum++) {
       let line = document.lineAt(lineNum)
       if (inString) {
@@ -41,7 +39,6 @@ class GdDocumentFormatter {
         thisIndent += oneIndent
       }
       tokens.shift()
-      console.log(tokens)
       let newLine = (thisIndent + tokens.join("")).trimEnd()
       edits.push(vscode.TextEdit.replace(line.range, newLine))
       let lastToken = tokens.pop()
