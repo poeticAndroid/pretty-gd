@@ -3,7 +3,7 @@
   "displayName": "pretty.gd",
   "description": "Formatter for GDscript",
   "icon": "images/pretty.png",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "poeticAndroid",
   "repository": {
     "type": "git",
@@ -21,6 +21,18 @@
   ],
   "activationEvents": [
     "onLanguage:gdscript"
+  ],
+  "languages": [
+    {
+      "id": "gdscript",
+      "aliases": [
+        "GDScript",
+        "gdscript"
+      ],
+      "extensions": [
+        ".gd"
+      ]
+    }
   ],
   "main": "./extension.js",
   "scripts": {
