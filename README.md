@@ -18,6 +18,10 @@ none yet..
 
 ## Release Notes
 
+### 1.2.0
+
+ - Recognizing node paths
+
 ### 0.3.0
 
  - Giving keywords some room

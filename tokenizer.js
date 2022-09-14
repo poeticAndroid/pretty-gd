@@ -10,6 +10,8 @@ function tokenize(_input) {
     if (char === "#") {
       tokens.push((lastTokenType ? " " : "") + input.slice(pos))
       pos = input.length
+    } else if (char === "$") {
+      tokens.push(readNode())
     } else if (char === "-" && input.charAt(pos + 1).match(/[0-9\.a-z_A-Z]/)) {
       pos++
       if (input.charAt(pos).match(/[a-z_A-Z]/)) {
@@ -45,7 +47,7 @@ function readWhitespace() {
 
 function readName() {
   let token = ""
-  if (lastTokenType === "name" || lastTokenType === "number") token = " "
+  if (isStickyType(lastTokenType)) token = " "
   while (input.charAt(pos).match(/[a-z_A-Z0-9]/)) {
     token += input.charAt(pos++)
   }
@@ -58,9 +60,24 @@ function readName() {
   }
   return token
 }
+function readNode() {
+  let token = ""
+  if (isStickyType(lastTokenType)) token = " "
+  if (input.charAt(pos) !== "$") return token
+  token += input.charAt(pos++)
+  if (input.charAt(pos) === "\"") {
+    token += readString().trim()
+  } else {
+    while (input.charAt(pos).match(/[a-z_A-Z0-9\/\%]/)) {
+      token += input.charAt(pos++)
+    }
+  }
+  lastTokenType = "node"
+  return token
+}
 function readNumber() {
   let token = ""
-  if (lastTokenType === "name" || lastTokenType === "number") token = " "
+  if (isStickyType(lastTokenType)) token = " "
   while (input.charAt(pos).match(/[0-9.e\-]/)) {
     token += input.charAt(pos++)
   }
@@ -70,11 +87,11 @@ function readNumber() {
 function readSymbol() {
   let token = " "
   if (lastTokenType === "symbol") token = ""
-  while (pos < input.length && !input.charAt(pos).match(/[a-z_A-Z0-9\s#\[\]\(\)\{\}"]/)) {
+  while (pos < input.length && !input.charAt(pos).match(/[a-z_A-Z0-9\s#\$\[\]\(\)\{\}"]/)) {
     token += input.charAt(pos++)
   }
   token += " "
-  if ([".", ",", "@", "$", ":"].includes(token.trim().charAt(0))) {
+  if ([".", ",", "@", ":"].includes(token.trim().charAt(0))) {
     token = token.trim()
   }
   if (token === ",") {
@@ -85,7 +102,7 @@ function readSymbol() {
 }
 function readString() {
   let token = ""
-  if (lastTokenType === "name" || lastTokenType === "number") token = " "
+  if (isStickyType(lastTokenType)) token = " "
   if (input.slice(pos, pos + 3) === "\"\"\"") {
     token += input.slice(pos, pos + 3)
     pos += 3
@@ -109,5 +126,11 @@ function readString() {
   return token
 }
 
-const keywords = ["if", "elif", "else", "for", "while", "match", "break", "continue", "pass", "return", "class", "class_name", "extends", "is", "as", "self", "tool", "signal", "func", "static", "const", "enum", "var", "onready", "export", "setget", "breakpoint", "preload", "yield", "assert", "remote", "master", "puppet", "remotesync", "mastersync", "puppetsync"]
+function isStickyType(type) {
+  return type === "name" || type === "number" || type === "node"
+}
+
+
+const keywords = ["if", "elif", "else", "for", "while", "match", "break", "continue", "pass", "return", "class", "class_name", "extends", "is", "as", "self", "tool", "signal", "func", "static", "const", "enum", "var", "onready", "export", "setget", "breakpoint", "preload", "yield", "assert", "remote", "master", "puppet", "remotesync", "mastersync", "puppetsync",
+  "in", "not", "and", "or"]
 module.exports = tokenize
