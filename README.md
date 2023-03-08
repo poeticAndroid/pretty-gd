@@ -18,6 +18,12 @@ none yet..
 
 ## Release Notes
 
+### 1.3.0
+
+ - Added support for `_` in numbers
+ - Added support for `@annotations`
+ - Added support for nodepaths starting with `&`, `^` or `%`
+
 ### 1.2.0
 
  - Recognizing node paths
