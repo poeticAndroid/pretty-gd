@@ -10,7 +10,10 @@ function tokenize(_input) {
     if (char === "#") {
       tokens.push((lastTokenType ? " " : "") + input.slice(pos))
       pos = input.length
-    } else if (char === "$") {
+    } else if (char === "@") {
+      pos++
+      tokens.push("@" + readName())
+    } else if (char.match(/[\&\$\%\^]/) && input.charAt(pos + 1).trim()) {
       tokens.push(readNode())
     } else if (char === "-" && input.charAt(pos + 1).match(/[0-9\.a-z_A-Z]/)) {
       pos++
@@ -63,7 +66,7 @@ function readName() {
 function readNode() {
   let token = ""
   if (isStickyType(lastTokenType)) token = " "
-  if (input.charAt(pos) !== "$") return token
+  if (!input.charAt(pos).match(/[\&\$\%\^]/)) return token
   token += input.charAt(pos++)
   if (input.charAt(pos) === "\"") {
     token += readString().trim()
@@ -78,7 +81,7 @@ function readNode() {
 function readNumber() {
   let token = ""
   if (isStickyType(lastTokenType)) token = " "
-  while (input.charAt(pos).match(/[0-9.e\-]/)) {
+  while (input.charAt(pos).match(/[0-9.e\-\_]/)) {
     token += input.charAt(pos++)
   }
   lastTokenType = "number"
