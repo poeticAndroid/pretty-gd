@@ -134,6 +134,6 @@ function isStickyType(type) {
 }
 
 
-const keywords = ["if", "elif", "else", "for", "while", "match", "break", "continue", "pass", "return", "class", "class_name", "extends", "is", "as", "self", "tool", "signal", "func", "static", "const", "enum", "var", "onready", "export", "setget", "breakpoint", "preload", "yield", "assert", "remote", "master", "puppet", "remotesync", "mastersync", "puppetsync",
+const keywords = ["if", "elif", "else", "for", "while", "match", "break", "continue", "pass", "return", "class", "class_name", "extends", "is", "as", "tool", "signal", "func", "static", "const", "enum", "var", "onready", "export", "setget", "breakpoint", "yield", "assert", "remote", "master", "puppet", "remotesync", "mastersync", "puppetsync",
   "in", "not", "and", "or"]
 module.exports = tokenize
