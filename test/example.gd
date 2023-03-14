@@ -26,7 +26,7 @@ const THE_NAME = "Charly"
 
 # Enums.
 enum {UNIT_NEUTRAL, UNIT_ENEMY, UNIT_ALLY}
-enum Named {THING_1, THING_2, ANOTHER_THING = -1}
+enum Named{THING_1, THING_2, ANOTHER_THING = -1}
 
 # Built-in vector types.
 var v2 = Vector2(1, 2)
@@ -120,11 +120,11 @@ var a = 1 + \
 # Array
 var arr = []
 arr = [1, 2, 3]
-var b = arr[1] # This is 2.
-var c = arr[arr.size() - 1] # This is 3.
-var d = arr[-1] # Same as the previous line, but shorter.
-arr[0] = "Hi!" # Replacing value 1 with "Hi!".
-arr.append(4) # Array is now ["Hi!", 2, 3, 4].
+var b = arr[1]  # This is 2.
+var c = arr[arr.size() - 1]  # This is 3.
+var d = arr[-1]  # Same as the previous line, but shorter.
+arr[0] = "Hi!"  # Replacing value 1 with "Hi!".
+arr.append(4)  # Array is now ["Hi!", 2, 3, 4].
 
 # Dictionary
 var d = {4: 5, "A key": "A value", 28: [1, 2, 3]}
@@ -143,10 +143,10 @@ var d = {
 	more_key = "Hello"
 }
 
-var d = {} # Create an empty Dictionary.
-d.waiting = 14 # Add String "waiting" as a key and assign the value 14 to it.
-d[4] = "hello" # Add integer 4 as a key and assign the String "hello" as its value.
-d["Godot"] = 3.01 # Add String "Godot" as a key and assign the value 3.01 to it.
+var d = {}  # Create an empty Dictionary.
+d.waiting = 14  # Add String "waiting" as a key and assign the value 14 to it.
+d[4] = "hello"  # Add integer 4 as a key and assign the String "hello" as its value.
+d["Godot"] = 3.01  # Add String "Godot" as a key and assign the value 3.01 to it.
 
 var test = 4
 # Prints "hello" by indexing the dictionary with a dynamic key.
@@ -155,27 +155,27 @@ var test = 4
 print(d[test])
 
 # Variables
-var a # Data type is 'null' by default.
+var a  # Data type is 'null' by default.
 var b = 5
 var c = 3.8
-var d = b + c # Variables are always initialized in order.
+var d = b + c  # Variables are always initialized in order.
 
 var my_vector2: Vector2
 var my_node: Node = Sprite2D.new()
 
-var my_vector2 := Vector2() # 'my_vector2' is of type 'Vector2'.
-var my_node := Sprite2D.new() # 'my_node' is of type 'Sprite2D'.
+var my_vector2 := Vector2()  # 'my_vector2' is of type 'Vector2'.
+var my_node := Sprite2D.new()  # 'my_node' is of type 'Sprite2D'.
 
 # Casting
 var my_node2D: Node2D
-my_node2D = $Sprite2D as Node2D # Works since Sprite2D is a subtype of Node2D.
+my_node2D = $Sprite2D as Node2D  # Works since Sprite2D is a subtype of Node2D.
 
 var my_node2D: Node2D
-my_node2D = $Button as Node2D # Results in 'null' since a Button is not a subtype of Node2D.
+my_node2D = $Button as Node2D  # Results in 'null' since a Button is not a subtype of Node2D.
 
 var my_int: int
-my_int = "123" as int # The string can be converted to int.
-my_int = Vector2() as int # A Vector2 can't be converted to int, this will cause an error.
+my_int = "123" as int  # The string can be converted to int.
+my_int = Vector2() as int  # A Vector2 can't be converted to int, this will cause an error.
 
 # Will infer the variable to be of type Sprite2D.
 var my_sprite := $Character as Sprite2D
@@ -186,12 +186,12 @@ var my_sprite := $Character as Sprite2D
 # Constants
 const A = 5
 const B = Vector2(20, 20)
-const C = 10 + 20 # Constant expression.
-const D = Vector2(20, 30).x # Constant expression: 20.
-const E = [1, 2, 3, 4][0] # Constant expression: 1.
-const F = sin(20) # 'sin()' can be used in constant expressions.
-const G = x + 20 # Invalid; this is not a constant expression!
-const H = A + 20 # Constant expression: 25 (`A` is a constant).
+const C = 10 + 20  # Constant expression.
+const D = Vector2(20, 30).x  # Constant expression: 20.
+const E = [1, 2, 3, 4][0]  # Constant expression: 1.
+const F = sin(20)  # 'sin()' can be used in constant expressions.
+const G = x + 20  # Invalid; this is not a constant expression!
+const H = A + 20  # Constant expression: 25 (`A` is a constant).
 
 const A: int = 5
 const B: Vector2 = Vector2()
@@ -204,7 +204,7 @@ const TILE_FLOOR = 1
 const TILE_SPIKE = 2
 const TILE_TELEPORT = 3
 
-enum State {STATE_IDLE, STATE_JUMP = 5, STATE_SHOOT}
+enum State{STATE_IDLE, STATE_JUMP = 5, STATE_SHOOT}
 # Is the same as:
 const State = {STATE_IDLE = 0, STATE_JUMP = 5, STATE_SHOOT = 6}
 # Access values with State.STATE_IDLE, etc.
@@ -231,7 +231,7 @@ func my_int_function() -> int:
 	return 0
 
 func void_function() -> void:
-	return # Can't return a value.
+	return  # Can't return a value.
 
 # Referencing functions
 func map(arr: Array, function: Callable) -> Array:
@@ -246,39 +246,39 @@ func add1(value: int) -> int:
 func _ready() -> void:
 	var my_array = [1, 2, 3]
 	var plus_one = map(my_array, add1)
-	print(plus_one) # Prints [2, 3, 4].
+	print(plus_one)  # Prints [2, 3, 4].
 
 # Lambda functions
 var lambda = func(x): print(x)
-lambda.call(42) # Prints "42"
+lambda.call(42)  # Prints "42"
 
 var lambda = func my_lambda(x):
 	print(x)
 
 var x = 42
 var my_lambda = func(): print(x)
-my_lambda.call() # Prints "42"
+my_lambda.call()  # Prints "42"
 x = "Hello"
-my_lambda.call() # Prints "42"
+my_lambda.call()  # Prints "42"
 
 # Static functions
 static func sum2(a, b):
 	return a + b
 
 # Expressions
-2 + 2 # Binary operation.
--5 # Unary operation.
-"okay" if x > 4 else "not okay" # Ternary operation.
-x # Identifier representing variable or constant.
-x.a # Attribute access.
-x[4] # Subscript access.
-x > 2 or x < 5 # Comparisons and logic operators.
-x == y + 2 # Equality test.
-do_something() # Function call.
-[1, 2, 3] # Array definition.
-{A = 1, B = 2} # Dictionary definition.
-preload("res://icon.png") # Preload builtin function.
-self # Reference to current instance.
+2 + 2  # Binary operation.
+-5  # Unary operation.
+"okay" if x > 4 else "not okay"  # Ternary operation.
+x  # Identifier representing variable or constant.
+x.a  # Attribute access.
+x[4]  # Subscript access.
+x > 2 or x < 5  # Comparisons and logic operators.
+x == y + 2  # Equality test.
+do_something()  # Function call.
+[1, 2, 3]  # Array definition.
+{A = 1, B = 2}  # Dictionary definition.
+preload("res://icon.png")  # Preload builtin function.
+self  # Reference to current instance.
 
 # if/else/elif
 if (expression):
@@ -328,38 +328,38 @@ while (expression):
 
 # for
 for x in [5, 7, 11]:
-	statement # Loop iterates 3 times with 'x' as 5, then 7 and finally 11.
+	statement  # Loop iterates 3 times with 'x' as 5, then 7 and finally 11.
 
 var dict = {"a": 0, "b": 1, "c": 2}
 for i in dict:
-	print(dict[i]) # Prints 0, then 1, then 2.
+	print(dict[i])  # Prints 0, then 1, then 2.
 
 for i in range(3):
-	statement # Similar to [0, 1, 2] but does not allocate an array.
+	statement  # Similar to [0, 1, 2] but does not allocate an array.
 
 for i in range(1, 3):
-	statement # Similar to [1, 2] but does not allocate an array.
+	statement  # Similar to [1, 2] but does not allocate an array.
 
 for i in range(2, 8, 2):
-	statement # Similar to [2, 4, 6] but does not allocate an array.
+	statement  # Similar to [2, 4, 6] but does not allocate an array.
 
 for c in "Hello":
-	print(c) # Iterate through all characters in a String, print every letter on new line.
+	print(c)  # Iterate through all characters in a String, print every letter on new line.
 
 for i in 3:
-	statement # Similar to range(3).
+	statement  # Similar to range(3).
 
 for i in 2.2:
-	statement # Similar to range(ceil(2.2)).
+	statement  # Similar to range(ceil(2.2)).
 
 for i in array.size():
 	array[i] = "Hello World"
 
 for string in string_array:
-	string = "Hello World" # This has no effect
+	string = "Hello World"  # This has no effect
 
 for node in node_array:
-	node.add_to_group("Cool_Group") # This has an effect
+	node.add_to_group("Cool_Group")  # This has an effect
 
 # match
 match (expression):
@@ -407,7 +407,7 @@ match x:
 		print("Empty array")
 	[1, 3, "test", null]:
 		print("Very specific array")
-	[var start, _, "test"]:
+	[ var start, _, "test"]:
 		print("First element is ", start, ", and the last is \"test\"")
 	[42, ..]:
 		print("Open ended array")
@@ -486,23 +486,23 @@ if entity is Enemy:
 super(args)
 
 func some_func(x):
-	super(x) # Calls the same function on the super class.
+	super(x)  # Calls the same function on the super class.
 
 func overriding():
-	return 0 # This overrides the method in the base class.
+	return 0  # This overrides the method in the base class.
 
 func dont_override():
-	return super.overriding() # This calls the method as defined in the base class.
+	return super.overriding()  # This calls the method as defined in the base class.
 
 func _init(arg):
-	super("some_default", arg) # Call the custom base constructor.
+	super("some_default", arg)  # Call the custom base constructor.
 
 # State.gd (inherited class).
 var entity = null
 var message = null
 
 
-func _init(e=null):
+func _init(e = null):
 	entity = e
 
 
@@ -514,7 +514,7 @@ func enter(m):
 extends "State.gd"
 
 
-func _init(e=null, m=null):
+func _init(e = null, m = null):
 	super(e)
 	# Do something with 'e'.
 	message = m
@@ -663,7 +663,7 @@ func _on_Character_health_changed(old_value, new_value, character_name):
 
 func wait_confirmation():
 	print("Prompting user")
-	await $Button.button_up # Waits for the button_up signal from Button node.
+	await $Button.button_up  # Waits for the button_up signal from Button node.
 	print("User confirmed")
 	return true
 
@@ -676,7 +676,7 @@ func request_confirmation():
 		print("User cancelled")
 
 func wrong():
-	var confirmed = wait_confirmation() # Will give an error.
+	var confirmed = wait_confirmation()  # Will give an error.
 
 func okay():
 	wait_confirmation()
