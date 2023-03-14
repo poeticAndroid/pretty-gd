@@ -2,7 +2,7 @@
 
 ![pretty godot](./images/pretty.png)
 
-A formatter for GDScript that just works!
+A formatter for GDScript that just works! kinda...
 
 ## Requirements
 
