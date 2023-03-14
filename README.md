@@ -18,6 +18,11 @@ none yet..
 
 ## Release Notes
 
+### 1.7.0
+
+ - Recongnize operators longer than one character
+ - Refactored tokenizer
+
 ### 1.3.0
 
  - Added support for `_` in numbers

@@ -1,42 +1,81 @@
-let pos, input, lastTokenType
+let pos, input, tokenType
 
 function tokenize(_input) {
   pos = 0
   input = _input
-  lastTokenType = null
+  tokenType = null
+  let lastTokenType, token
   let tokens = [readWhitespace()]
   while (pos < input.length) {
     let char = input.charAt(pos)
     if (char === "#") {
-      tokens.push((lastTokenType ? " " : "") + input.slice(pos))
+      token = input.slice(pos).trim()
+      tokenType = "comment"
+      tokens.push(between(lastTokenType, tokenType) + token)
       pos = input.length
+    } else if (longsymbols.includes(input.slice(pos, pos + 4))) {
+      token = input.slice(pos, pos + 4)
+      pos += 4
+      tokenType = "symbol"
+      tokens.push(between(lastTokenType, tokenType) + token)
+    } else if (longsymbols.includes(input.slice(pos, pos + 3))) {
+      token = input.slice(pos, pos + 3)
+      pos += 3
+      tokenType = "symbol"
+      tokens.push(between(lastTokenType, tokenType) + token)
+    } else if (longsymbols.includes(input.slice(pos, pos + 2))) {
+      token = input.slice(pos, pos + 2)
+      pos += 2
+      tokenType = "symbol"
+      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "@") {
       pos++
-      tokens.push("@" + readName())
+      token = "@" + readName()
+      tokenType = "keyword"
+      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char.match(/[\&\$\%\^]/) && input.charAt(pos + 1).trim()) {
-      tokens.push(readNode())
+      token = readNode()
+      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "-" && input.charAt(pos + 1).match(/[0-9\.a-z_A-Z]/)) {
       pos++
       if (input.charAt(pos).match(/[a-z_A-Z]/)) {
-        tokens.push("-" + readName())
+        token = "-" + readName()
       } else {
-        tokens.push("-" + readNumber())
+        token = "-" + readNumber()
       }
+      tokens.push(between(lastTokenType, tokenType) + token)
+    } else if (char === "." && input.charAt(pos + 1).match(/[0-9]/)) {
+      token = readNumber()
+      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char.match(/[a-z_A-Z]/)) {
-      tokens.push(readName())
+      token = readName()
+      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char.match(/[0-9]/)) {
-      tokens.push(readNumber())
-    } else if (char.match(/[\[\]\(\)\{\}]/)) {
-      tokens.push(char)
+      token = readNumber()
+      tokens.push(between(lastTokenType, tokenType) + token)
+    } else if (char.match(/[\[\]\(\)\{\}\.]/)) {
       pos++
-      lastTokenType = "parens"
+      token = char
+      tokenType = "parens"
+      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "\"") {
-      tokens.push(readString())
+      token = readString()
+      tokens.push(between(lastTokenType, tokenType) + token)
+    } else if (char === "," || char === ";" || char === ":") {
+      pos++
+      token = char
+      tokenType = "comma"
+      tokens.push(between(lastTokenType, tokenType) + token)
     } else {
-      tokens.push(readSymbol())
+      pos++
+      token = char
+      tokenType = "symbol"
+      tokens.push(between(lastTokenType, tokenType) + token)
     }
+    lastTokenType = tokenType
     readWhitespace()
   }
+  // if (input !== tokens.join("")) console.log(input, tokens)
   return tokens
 }
 
@@ -50,62 +89,40 @@ function readWhitespace() {
 
 function readName() {
   let token = ""
-  if (isStickyType(lastTokenType)) token = " "
   while (input.charAt(pos).match(/[a-z_A-Z0-9]/)) {
     token += input.charAt(pos++)
   }
-  if (keywords.includes(token.trim())) {
-    if (lastTokenType && lastTokenType !== "keyword") token = " " + token.trim()
-    token += " "
-    lastTokenType = "keyword"
+  if (keywords.includes(token)) {
+    tokenType = "keyword"
   } else {
-    lastTokenType = "name"
+    tokenType = "name"
   }
   return token
 }
 function readNode() {
   let token = ""
-  if (isStickyType(lastTokenType)) token = " "
   if (!input.charAt(pos).match(/[\&\$\%\^]/)) return token
   token += input.charAt(pos++)
   if (input.charAt(pos) === "\"") {
-    token += readString().trim()
+    token += readString()
   } else {
     while (input.charAt(pos).match(/[a-z_A-Z0-9\/\%]/)) {
       token += input.charAt(pos++)
     }
   }
-  lastTokenType = "node"
+  tokenType = "node"
   return token
 }
 function readNumber() {
   let token = ""
-  if (isStickyType(lastTokenType)) token = " "
   while (input.charAt(pos).match(/[0-9.e\-\_]/)) {
     token += input.charAt(pos++)
   }
-  lastTokenType = "number"
-  return token
-}
-function readSymbol() {
-  let token = " "
-  if (lastTokenType === "symbol") token = ""
-  while (pos < input.length && !input.charAt(pos).match(/[a-z_A-Z0-9\s#\$\[\]\(\)\{\}"]/)) {
-    token += input.charAt(pos++)
-  }
-  token += " "
-  if ([".", ",", "@", ":"].includes(token.trim().charAt(0))) {
-    token = token.trim()
-  }
-  if (token === ",") {
-    token += " "
-  }
-  lastTokenType = "symbol"
+  tokenType = "number"
   return token
 }
 function readString() {
   let token = ""
-  if (isStickyType(lastTokenType)) token = " "
   if (input.slice(pos, pos + 3) === "\"\"\"") {
     token += input.slice(pos, pos + 3)
     pos += 3
@@ -114,7 +131,7 @@ function readString() {
     }
     token += input.slice(pos, pos + 3)
     pos += 3
-    lastTokenType = "string"
+    tokenType = "string"
     return token
   }
   token += input.charAt(pos++)
@@ -125,15 +142,32 @@ function readString() {
     }
   }
   token += input.charAt(pos++)
-  lastTokenType = "string"
+  tokenType = "string"
   return token
 }
 
-function isStickyType(type) {
-  return type === "name" || type === "number" || type === "node"
+function between(type1, type2) {
+  if (!type1) return ""
+  if (!type2) return ""
+
+  if (type1 === "symbol") return " "
+  if (type2 === "symbol") return " "
+  if (type1 === "keyword") return " "
+  if (type2 === "keyword") return " "
+  if (type1 === "comma") return " "
+  if (type2 === "comma") return ""
+  if (type1 === "parens") return ""
+  if (type2 === "parens") return ""
+
+  if (type1 === "number") return " "
+  if (type1 === "name") return " "
+  if (type1 === "node") return " "
+  return ""
 }
 
 
-const keywords = ["if", "elif", "for", "while", "match", "break", "continue", "pass", "return", "class", "class_name", "extends", "is", "as", "tool", "signal", "func", "static", "const", "enum", "var", "onready", "export", "setget", "breakpoint", "yield", "assert", "remote", "master", "puppet", "remotesync", "mastersync", "puppetsync",
-  "in", "not", "and", "or"]
+const keywords = ["if", "elif", "for", "while", "match", "break", "continue", "pass", "return", "class", "class_name", "extends", "is", "as",
+  "tool", "signal", "func", "static", "const", "enum", "var", "onready", "export", "setget", "breakpoint", "yield", "assert", "remote", "master",
+  "puppet", "remotesync", "mastersync", "puppetsync", "in", "not", "and", "or"]
+const longsymbols = ["**", "<<", ">>", "==", "!=", ">=", "<=", "&&", "||", "+=", "-=", "*=", "/=", "%=", "**=", "&=", "^=", "|=", "<<=", ">>=", ":="]
 module.exports = tokenize
