@@ -149,6 +149,7 @@ function readString() {
 function between(type1, type2) {
   if (!type1) return ""
   if (!type2) return ""
+  if (type2 === "comment") return " "
 
   if (type1 === "symbol") return " "
   if (type2 === "symbol") return " "
