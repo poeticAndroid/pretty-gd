@@ -26,7 +26,7 @@ const THE_NAME = "Charly"
 
 # Enums.
 enum {UNIT_NEUTRAL, UNIT_ENEMY, UNIT_ALLY}
-enum Named{THING_1, THING_2, ANOTHER_THING = -1}
+enum Named {THING_1, THING_2, ANOTHER_THING = -1}
 
 # Built-in vector types.
 var v2 = Vector2(1, 2)
@@ -140,8 +140,9 @@ var d = {
 	test22 = "value",
 	some_key = 2,
 	other_key = [2, 3, 4],
-	more_key = "Hello"
-}
+	more_key = "Hello",
+	parensoup = {[{[{}, [], {}]}]}
+	}
 
 var d = {}  # Create an empty Dictionary.
 d.waiting = 14  # Add String "waiting" as a key and assign the value 14 to it.
@@ -204,7 +205,7 @@ const TILE_FLOOR = 1
 const TILE_SPIKE = 2
 const TILE_TELEPORT = 3
 
-enum State{STATE_IDLE, STATE_JUMP = 5, STATE_SHOOT}
+enum State {STATE_IDLE, STATE_JUMP = 5, STATE_SHOOT}
 # Is the same as:
 const State = {STATE_IDLE = 0, STATE_JUMP = 5, STATE_SHOOT = 6}
 # Access values with State.STATE_IDLE, etc.

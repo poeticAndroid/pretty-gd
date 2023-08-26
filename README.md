@@ -18,6 +18,10 @@ none yet..
 
 ## Release Notes
 
+### 1.9.0
+
+ - Opening curly brackets is now its own class (which helps with spacing in enums)
+
 ### 1.7.0
 
  - Recongnize operators longer than one character

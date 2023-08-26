@@ -11,31 +11,25 @@ function tokenize(_input) {
     if (char === "#") {
       token = input.slice(pos).trim()
       tokenType = "comment"
-      tokens.push(between(lastTokenType, tokenType) + token)
       pos = input.length
     } else if (longsymbols.includes(input.slice(pos, pos + 4))) {
       token = input.slice(pos, pos + 4)
       pos += 4
       tokenType = "symbol"
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (longsymbols.includes(input.slice(pos, pos + 3))) {
       token = input.slice(pos, pos + 3)
       pos += 3
       tokenType = "symbol"
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (longsymbols.includes(input.slice(pos, pos + 2))) {
       token = input.slice(pos, pos + 2)
       pos += 2
       tokenType = "symbol"
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "@") {
       pos++
       token = "@" + readName()
       tokenType = "name"
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char.match(/[\&\$\%\^]/) && input.charAt(pos + 1).trim()) {
       token = readNode()
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "-" && input.charAt(pos + 1).match(/[0-9\.a-z_A-Z]/)) {
       pos++
       if (input.charAt(pos).match(/[a-z_A-Z]/)) {
@@ -43,35 +37,32 @@ function tokenize(_input) {
       } else {
         token = "-" + readNumber()
       }
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "." && input.charAt(pos + 1).match(/[0-9]/)) {
       token = readNumber()
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char.match(/[a-z_A-Z]/)) {
       token = readName()
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char.match(/[0-9]/)) {
       token = readNumber()
-      tokens.push(between(lastTokenType, tokenType) + token)
+    } else if (char === "{") {
+      pos++
+      token = char
+      tokenType = "curly"
     } else if (char.match(/[\[\]\(\)\{\}\.]/)) {
       pos++
       token = char
       tokenType = "parens"
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "\"" || char === "'") {
       token = readString()
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else if (char === "," || char === ";" || char === ":") {
       pos++
       token = char
       tokenType = "comma"
-      tokens.push(between(lastTokenType, tokenType) + token)
     } else {
       pos++
       token = char
       tokenType = "symbol"
-      tokens.push(between(lastTokenType, tokenType) + token)
     }
+    tokens.push(between(lastTokenType, tokenType) + "" + token)
     lastTokenType = tokenType
     readWhitespace()
   }
