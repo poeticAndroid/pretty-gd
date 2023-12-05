@@ -30,12 +30,12 @@ function tokenize(_input) {
       tokenType = "name"
     } else if (char.match(/[\&\$\%\^]/) && input.charAt(pos + 1).trim()) {
       token = readNode()
-    } else if (char === "-" && input.charAt(pos + 1).match(/[0-9\.a-z_A-Z]/)) {
+    } else if (char.match(/[\-\!]/) && input.charAt(pos + 1).match(/[0-9\.a-z_A-Z]/)) {
       pos++
       if (input.charAt(pos).match(/[a-z_A-Z]/)) {
-        token = "-" + readName()
+        token = char + readName()
       } else {
-        token = "-" + readNumber()
+        token = char + readNumber()
       }
     } else if (char === "." && input.charAt(pos + 1).match(/[0-9]/)) {
       token = readNumber()

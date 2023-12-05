@@ -281,6 +281,11 @@ do_something()  # Function call.
 preload("res://icon.png")  # Preload builtin function.
 self  # Reference to current instance.
 
+speed += -brake
+
+if !some_variable && !some_other_variable:
+	pass
+
 # if/else/elif
 if (expression):
 	statement(s)

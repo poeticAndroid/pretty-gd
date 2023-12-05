@@ -18,6 +18,10 @@ none yet..
 
 ## Release Notes
 
+### 1.10.0
+
+ - Treat `!` as a sign (like `-` for negative values)
+
 ### 1.9.0
 
  - Opening curly brackets is now its own class (which helps with spacing in enums)
