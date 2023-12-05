@@ -3,7 +3,7 @@
   "displayName": "pretty.gd",
   "description": "Formatter for GDscript",
   "icon": "images/pretty.png",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "publisher": "poeticAndroid",
   "repository": {
     "type": "git",
