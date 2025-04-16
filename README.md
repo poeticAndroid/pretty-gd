@@ -1,8 +1,8 @@
-# pretty.gd
+# pretty.gd for VS Code
 
 ![pretty godot](./images/pretty.png)
 
-A formatter for GDScript that just works! kinda...
+A formatter for GDScript that just works! 
 
 ## Requirements
 
@@ -16,7 +16,13 @@ none yet..
 
 none yet..
 
+If you come across any other issues with using this software, please [let me know](https://github.com/poeticAndroid/pretty-gd-vs/issues).
+
 ## Release Notes
+
+### 1.18.2
+
+ - Updated to use the [pretty-gd-js](https://www.npmjs.com/package/pretty-gd-js) node package. 📦
 
 ### 1.10.0
 
