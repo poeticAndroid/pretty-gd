@@ -26,6 +26,16 @@ class GdDocumentFormatter {
             let line = document.lineAt(lineNum)
             lines += line.text + "\n"
         }
+
+        let options = vscode.window.activeTextEditor.options
+        pretty.indent = "\t"
+        pretty.tabSize = options.tabSize
+        if (options.insertSpaces) {
+            pretty.indent = ""
+            for (let i = 0; i < options.indentSize; i++) {
+                pretty.indent += " "
+            }
+        }
         lines = pretty.prettify(lines) + "\n"
 
         let range = new vscode.Range(document.lineAt(0).range.start, document.lineAt(document.lineCount - 1).range.end)

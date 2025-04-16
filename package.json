@@ -4,7 +4,7 @@
   "description": "Formatter for GDscript",
   "type": "commonjs",
   "icon": "images/pretty.png",
-  "version": "1.18.2",
+  "version": "1.18.3",
   "publisher": "poeticAndroid",
   "repository": {
     "type": "git",

@@ -20,6 +20,10 @@ If you come across any other issues with using this software, please [let me kno
 
 ## Release Notes
 
+### 1.18.3
+
+ - Obey tab settings in current editor.
+
 ### 1.18.2
 
  - Updated to use the [pretty-gd-js](https://www.npmjs.com/package/pretty-gd-js) node package. 📦
