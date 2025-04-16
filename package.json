@@ -2,8 +2,9 @@
   "name": "pretty-gd-vs",
   "displayName": "pretty.gd for VS Code",
   "description": "Formatter for GDscript",
+  "type": "commonjs",
   "icon": "images/pretty.png",
-  "version": "1.10.1",
+  "version": "1.18.1",
   "publisher": "poeticAndroid",
   "repository": {
     "type": "git",
@@ -34,21 +35,24 @@
       ]
     }
   ],
-  "main": "./extension.js",
+  "main": "./extension.cjs",
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.70.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.70.0",
+    "@vscode/test-electron": "^2.1.5",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.7.4",
-    "@vscode/test-electron": "^2.1.5"
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "pretty-gd-js": "^1.18.1"
   }
 }
