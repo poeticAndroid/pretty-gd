@@ -10,13 +10,12 @@ class_name MyClass
 # Inheritance:
 extends BaseClass
 
-
 # Member variables.
 var a = 5
 var s = "Hello"
 var arr = [1, 2, 3]
-var dict = {"key": "value", 2: 3}
-var other_dict = {key = "value", other_key = 2}
+var dict = { "key": "value", 2: 3 }
+var other_dict = { key = "value", other_key = 2 }
 var typed_var: int
 var inferred_type := "String"
 
@@ -25,8 +24,8 @@ const ANSWER = 42
 const THE_NAME = "Charly"
 
 # Enums.
-enum {UNIT_NEUTRAL, UNIT_ENEMY, UNIT_ALLY}
-enum Named {THING_1, THING_2, ANOTHER_THING = -1}
+enum { UNIT_NEUTRAL, UNIT_ENEMY, UNIT_ALLY }
+enum Named { THING_1, THING_2, ANOTHER_THING = -1 }
 
 # Built-in vector types.
 var v2 = Vector2(1, 2)
@@ -127,7 +126,7 @@ arr[0] = "Hi!"  # Replacing value 1 with "Hi!".
 arr.append(4)  # Array is now ["Hi!", 2, 3, 4].
 
 # Dictionary
-var d = {4: 5, "A key": "A value", 28: [1, 2, 3]}
+var d = { 4: 5, "A key": "A value", 28: [1, 2, 3] }
 d["Hi!"] = 0
 d = {
 	22: "value",
@@ -141,10 +140,10 @@ var d = {
 	some_key = 2,
 	other_key = [2, 3, 4],
 	more_key = "Hello",
-	parensoup = {[{[{}, [], {}]}]}
+	parensoup = { [{ [{ }, [], { }] }] }
 	}
 
-var d = {}  # Create an empty Dictionary.
+var d = { }  # Create an empty Dictionary.
 d.waiting = 14  # Add String "waiting" as a key and assign the value 14 to it.
 d[4] = "hello"  # Add integer 4 as a key and assign the String "hello" as its value.
 d["Godot"] = 3.01  # Add String "Godot" as a key and assign the value 3.01 to it.
@@ -198,17 +197,18 @@ const A: int = 5
 const B: Vector2 = Vector2()
 
 # Enums
-enum {TILE_BRICK, TILE_FLOOR, TILE_SPIKE, TILE_TELEPORT}
+enum { TILE_BRICK, TILE_FLOOR, TILE_SPIKE, TILE_TELEPORT }
 # Is the same as:
 const TILE_BRICK = 0
 const TILE_FLOOR = 1
 const TILE_SPIKE = 2
 const TILE_TELEPORT = 3
 
-enum State {STATE_IDLE, STATE_JUMP = 5, STATE_SHOOT}
+enum State { STATE_IDLE, STATE_JUMP = 5, STATE_SHOOT }
 # Is the same as:
-const State = {STATE_IDLE = 0, STATE_JUMP = 5, STATE_SHOOT = 6}
+const State = { STATE_IDLE = 0, STATE_JUMP = 5, STATE_SHOOT = 6 }
 # Access values with State.STATE_IDLE, etc.
+
 
 # Functions
 func my_function(a, b):
@@ -216,23 +216,31 @@ func my_function(a, b):
 	print(b)
 	return a + b  # Return is optional; without it 'null' is returned.
 
+
 func square(a): return a * a
+
 
 func hello_world(): print("Hello World")
 
+
 func empty_function(): pass
+
 
 func my_function(a: int, b: String):
 	pass
 
+
 func my_function(int_arg := 42, String_arg := "string"):
 	pass
+
 
 func my_int_function() -> int:
 	return 0
 
+
 func void_function() -> void:
 	return  # Can't return a value.
+
 
 # Referencing functions
 func map(arr: Array, function: Callable) -> Array:
@@ -241,8 +249,10 @@ func map(arr: Array, function: Callable) -> Array:
 		result.push_back(function.call(item))
 	return result
 
+
 func add1(value: int) -> int:
 	return value + 1;
+
 
 func _ready() -> void:
 	var my_array = [1, 2, 3]
@@ -277,7 +287,7 @@ x > 2 or x < 5  # Comparisons and logic operators.
 x == y + 2  # Equality test.
 do_something()  # Function call.
 [1, 2, 3]  # Array definition.
-{A = 1, B = 2}  # Dictionary definition.
+{ A = 1, B = 2 }  # Dictionary definition.
 preload("res://icon.png")  # Preload builtin function.
 self  # Reference to current instance.
 
@@ -336,7 +346,7 @@ while (expression):
 for x in [5, 7, 11]:
 	statement  # Loop iterates 3 times with 'x' as 5, then 7 and finally 11.
 
-var dict = {"a": 0, "b": 1, "c": 2}
+var dict = { "a": 0, "b": 1, "c": 2 }
 for i in dict:
 	print(dict[i])  # Prints 0, then 1, then 2.
 
@@ -368,7 +378,7 @@ for node in node_array:
 	node.add_to_group("Cool_Group")  # This has an effect
 
 # match
-match (expression):
+match(expression):
 	[pattern](s):
 		[block]
 	[pattern](s):
@@ -419,15 +429,15 @@ match x:
 		print("Open ended array")
 
 match x:
-	{}:
+	{ }:
 		print("Empty dict")
-	{"name": "Dennis"}:
+	{ "name": "Dennis" }:
 		print("The name is Dennis")
-	{"name": "Dennis", "age": var age}:
+	{ "name": "Dennis", "age": var age }:
 		print("Dennis is ", age, " years old.")
-	{"name", "age"}:
+	{ "name", "age" }:
 		print("Has a name and an age, but it's not Dennis :(")
-	{"key": "godotisawesome", ..}:
+	{ "key": "godotisawesome", .. }:
 		print("I only checked for one entry and ignored the rest")
 
 match x:
@@ -455,7 +465,6 @@ extends Node
 # Saved as a file named 'character.gd'.
 
 class_name Character
-
 
 var health = 5
 
@@ -491,14 +500,18 @@ if entity is Enemy:
 
 super(args)
 
+
 func some_func(x):
 	super(x)  # Calls the same function on the super class.
+
 
 func overriding():
 	return 0  # This overrides the method in the base class.
 
+
 func dont_override():
 	return super.overriding()  # This calls the method as defined in the base class.
+
 
 func _init(arg):
 	super("some_default", arg)  # Call the custom base constructor.
@@ -515,7 +528,6 @@ func _init(e = null):
 func enter(m):
 	message = m
 
-
 # Idle.gd (inheriting class).
 extends "State.gd"
 
@@ -527,10 +539,12 @@ func _init(e = null, m = null):
 
 # Idle.gd
 
+
 func _init():
 	super(5)
 
 # Inside a class file.
+
 
 # An inner class in this class file.
 class SomeInnerClass:
@@ -571,12 +585,14 @@ var my_prop:
 @tool
 extends Button
 
+
 func _ready():
 	print("Hello")
 
 extends Node
 
 var my_file_ref
+
 
 func _ready():
 	var f = File.new()
@@ -586,6 +602,7 @@ func _ready():
 	# the WeakRef will not prevent f from being freed when other_node is finished
 	other_node.use_file(f)
 
+
 func _this_is_called_later():
 	var my_file = my_file_ref.get_ref()
 	if my_file:
@@ -593,11 +610,11 @@ func _this_is_called_later():
 
 extends Node
 
-
 # A signal named health_depleted.
 signal health_depleted
 
 # Game.gd
+
 
 func _ready():
 	var character_node = get_node('Character')
@@ -627,6 +644,7 @@ func take_damage(amount):
 # Here, we define a function to use as a callback when the
 # character's health_changed signal is emitted.
 
+
 ...
 func _on_Character_health_changed(old_value, new_value):
 	if old_value > new_value:
@@ -641,6 +659,7 @@ func _on_Character_health_changed(old_value, new_value):
 
 # Game.gd
 
+
 func _ready():
 	var character_node = get_node('Character')
 	var lifebar_node = get_node('UserInterface/Lifebar')
@@ -652,6 +671,7 @@ signal health_changed(old_value, new_value)
 
 # Game.gd
 
+
 func _ready():
 	var character_node = get_node('Character')
 	var battle_log_node = get_node('UserInterface/BattleLog')
@@ -660,6 +680,7 @@ func _ready():
 
 # BattleLog.gd
 
+
 func _on_Character_health_changed(old_value, new_value, character_name):
 	if not new_value <= old_value:
 		return
@@ -667,11 +688,13 @@ func _on_Character_health_changed(old_value, new_value, character_name):
 	var damage = old_value - new_value
 	label.text += character_name + " took " + str(damage) + " damage."
 
+
 func wait_confirmation():
 	print("Prompting user")
 	await $Button.button_up  # Waits for the button_up signal from Button node.
 	print("User confirmed")
 	return true
+
 
 func request_confirmation():
 	print("Will ask the user")
@@ -681,22 +704,28 @@ func request_confirmation():
 	else:
 		print("User cancelled")
 
+
 func wrong():
 	var confirmed = wait_confirmation()  # Will give an error.
+
 
 func okay():
 	wait_confirmation()
 	print("This will be printed immediately, before the user press the button.")
 
+
 func no_wait():
 	var x = await get_five()
 	print("This doesn't make this function a coroutine.")
 
+
 func get_five():
 	return 5
 
+
 func get_signal():
 	return $Button.button_up
+
 
 func wait_button():
 	await get_signal()
