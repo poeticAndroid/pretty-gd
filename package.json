@@ -1,18 +1,18 @@
 {
-  "name": "pretty-gd",
-  "displayName": "pretty.gd",
+  "name": "pretty-gd-vs",
+  "displayName": "pretty.gd for VS Code",
   "description": "Formatter for GDscript",
   "icon": "images/pretty.png",
   "version": "1.10.1",
   "publisher": "poeticAndroid",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/poeticAndroid/pretty-gd.git"
+    "url": "git+https://github.com/poeticAndroid/pretty-gd-vs.git"
   },
   "bugs": {
-    "url": "https://github.com/poeticAndroid/pretty-gd/issues"
+    "url": "https://github.com/poeticAndroid/pretty-gd-vs/issues"
   },
-  "homepage": "https://github.com/poeticAndroid/pretty-gd#readme",
+  "homepage": "https://github.com/poeticAndroid/pretty-gd-vs#readme",
   "engines": {
     "vscode": "^1.70.0"
   },
