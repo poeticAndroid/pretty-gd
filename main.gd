@@ -3,7 +3,11 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print(Prettifier.prettify( FileAccess.get_file_as_string("res://addons/pretty-gd/pretty.gd") ) )
+	print(Prettifier.prettify( FileAccess.get_file_as_string("res://addons/pretty-gd/pretty.gd").left(-4) ) )
+	var ascii=""
+	for i in range(32,127):
+		ascii+="".chr(i)
+	print(ascii)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
