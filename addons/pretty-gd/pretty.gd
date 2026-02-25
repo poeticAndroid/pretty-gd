@@ -1,40 +1,67 @@
 class_name Prettifier
 extends Node2D
 
-static var indent="\t"
+static var indent_str="\t"
+static var tab_size=4
 
-static var input
-static var pos
+static var input=""
+static var pos=0
+static var first_words=[]
+static var last_token=""
 
 static func prettify(_input:String)->String:
 	input=_input
 	pos=0
+	tab_size=space_size(indent_str)
 	var output=""
+	var min_indent=0
+	var max_indent=80
 	while not is_eof(): 
-		output+=read_line() 	
-	return output
+		var line = read_line(min_indent,max_indent)
+		if output.ends_with("\n\n") and not line.strip_edges() :continue
+		for first_token in first_words:
+			print("checking for ",first_token)
+			if doubleblank.has(first_token):
+				print("doubleblank found!")
+				var i=output.rfind("\n\n")
+				if i>0: output= output.substr(0,i)+"\n"+output.substr(i)
+		min_indent=0
+		max_indent		= 		ceil  ( 								space_size(line)/tab_size )+2
+		output+=line 		+"\n"
+		if last_token==":":
+				max_indent+=-1
+				min_indent=max_indent
+	return output.strip_edges(false,true)
 	
 		
-static func read_line():
+static func read_line(min_indent=0,max_indent=10):
 	var line=read_whitespace()
+	first_words=[]
+	last_token=""
+	if is_eol():return read().strip_edges()
+	var indent= clamp(ceil( space_size(line)/tab_size ),min_indent,max_indent)
+	line=""
+	for i in range(indent):
+		line+=indent_str
 	var tokens=["","",""]
 	while not is_eol ( ) :
 		tokens.push_back(read_token())
 		while tokens.size()>3:tokens.pop_front()
 		line += between(tokens[0],tokens[1],tokens[2]) + tokens.back()
-	line= line.strip_edges(false,true)+ read()
-	return line
+	first_words=get_first_words(line)
+	line+=read()
+	return line	.strip_edges(false,true)
 		
 	
 
 static func read_token() :
 	var token=""
 	read_whitespace ( )
-	if longsymbols.has(peek(4)):
+	if longoperators.has(peek(4)):
 		token+=read(4)
-	elif longsymbols.has(peek(3)):
+	elif longoperators.has(peek(3)):
 		token+=read(3)
-	elif longsymbols.has(peek(2)):
+	elif longoperators.has(peek(2)):
 		token+=read(2)
 	elif peek()=="#":
 		token+=read_until("\n")
@@ -57,6 +84,8 @@ static func read_token() :
 	else:
 		token+=read()
 	read_whitespace ( )
+	if not (token.begins_with("#") or quote.contains( token.right(1) ) ):
+		last_token=token
 	return  token
 	
 	
@@ -171,10 +200,10 @@ static func between(token0,token1,token2):
 	if token1 == "{": return " "
 	if token2 == "}": return " "
 	
-	if longsymbols.has(token1):return" "
-	if longsymbols.has(token2):return" "
-	if symbol.containsn(token1):return" "
-	if symbol.containsn(token2):return" "
+	if longoperators.has(token1):return" "
+	if longoperators.has(token2):return" "
+	if operator.containsn(token1):return" "
+	if operator.containsn(token2):return" "
 	if comma.containsn( token1) : return " "
 	if comma.containsn( token2) : return ""
 	if keywords.has(token1):return" "
@@ -187,13 +216,38 @@ static func between(token0,token1,token2):
 	
 	return ""
 
+static func get_first_words(line) :
+	return Array(line.strip_edges().get_slice("#",0).get_slice("'",0).get_slice('"',0) .split(" ",false))
+
+	
+static func space_size(whitespace) :
+	if !whitespace: return 0
+	var sum = 0
+	for char in whitespace:
+		match char:
+			"\n":
+				sum = 0
+
+			"\t":
+				sum+=1
+				while sum % tab_size  :sum+=1
+
+			" ":
+				sum+=1
+			_:
+				return sum
+	return sum
+
+
+
 const keywords = ["if", "else", "elif", "for", "while", "break", "continue",
   "pass", "return", "class", "class_name", "extends", "is", "as", "signal",
   "static", "const", "enum", "var", "breakpoint", "yield", "in", "and", "or"]
-const longsymbols = ["**", "<<", ">>", "==", "!=", ">=", "<=", "&&", "||",
+const doubleblank=["class","func"]
+const longoperators = ["**", "<<", ">>", "==", "!=", ">=", "<=", "&&", "||",
   "+=", "-=", "*=", "/=", "%=", "**=", "&=", "^=", "|=", "<<=", ">>=",
   ":=", "->"]
-const symbol="%&*+-/<=>?\\^|" 
+const operator="%&*+-/<=>?\\^|" 
 const string="r&^"
 const quote="\"\'"
 const node="$%"
