@@ -23,17 +23,18 @@ static func prettify(_input:String)->String:
 	var max_indent=80
 	while not is_eof(): 
 		var line = read_line(min_indent,max_indent)
-		if output.ends_with("\n\n") and not line.strip_edges() :continue
-		for first_token in first_words:
-			if doubleblank.has(first_token):
-				var i=output.rfind("\n\n")
-				if i>0: output= output.substr(0,i)+"\n"+output.substr(i)
-		min_indent=0
-		max_indent		= 		ceil  ( 								space_size(line)/tab_size )+2
-		output+=line 		+"\n"
-		if last_token==":":
+		if line.strip_edges() :
+			for first_token in first_words:
+				if doubleblank.has(first_token):
+					var i=output.rfind("\n\n")
+					if i>0: output= output.substr(0,i)+"\n"+output.substr(i)
+			min_indent=0
+			max_indent		= 		ceil  ( 								space_size(line)/tab_size )+2
+			output+=line 		+"\n"
+			if last_token==":":
 				max_indent+=-1
 				min_indent=max_indent
+		elif not output.ends_with("\n\n") :output+="\n"
 	return output.strip_edges(false,true)
 	
 		
