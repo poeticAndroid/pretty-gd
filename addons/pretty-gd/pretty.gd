@@ -1,5 +1,6 @@
 class_name Prettifier
-extends Node2D
+
+
 
 static var indent_str="\t"
 static var tab_size=4
@@ -12,7 +13,11 @@ static var last_token=""
 static func prettify(_input:String)->String:
 	input=_input
 	pos=0
+	if not indent_str: indent_str="\t"
+	if not tab_size: tab_size=4
 	tab_size=space_size(indent_str)
+	if not tab_size: tab_size=4
+	print("tab_size: ", tab_size)
 	var output=""
 	var min_indent=0
 	var max_indent=80
@@ -20,9 +25,7 @@ static func prettify(_input:String)->String:
 		var line = read_line(min_indent,max_indent)
 		if output.ends_with("\n\n") and not line.strip_edges() :continue
 		for first_token in first_words:
-			print("checking for ",first_token)
 			if doubleblank.has(first_token):
-				print("doubleblank found!")
 				var i=output.rfind("\n\n")
 				if i>0: output= output.substr(0,i)+"\n"+output.substr(i)
 		min_indent=0
