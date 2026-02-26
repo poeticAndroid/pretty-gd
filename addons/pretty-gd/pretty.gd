@@ -14,10 +14,7 @@ static func prettify(_input:String)->String:
 	input=_input
 	pos=0
 	if not indent_str: indent_str="\t"
-	if not tab_size: tab_size=4
 	tab_size=space_size(indent_str)
-	if not tab_size: tab_size=4
-	print("tab_size: ", tab_size)
 	var output=""
 	var min_indent=0
 	var max_indent=80
@@ -226,6 +223,7 @@ static func get_first_words(line) :
 	
 static func space_size(whitespace) :
 	if !whitespace: return 0
+	if not tab_size: tab_size=4
 	var sum = 0
 	for char in whitespace:
 		match char:
