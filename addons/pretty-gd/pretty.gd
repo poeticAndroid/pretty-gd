@@ -85,7 +85,7 @@ static func read_token() :
 	else:
 		token+=read()
 	read_whitespace ( )
-	if not (token.begins_with("#") or quote.contains( token.right(1) ) ):
+	if not  token.begins_with("#") :
 		last_token=token
 	return  token
 	
