@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing pretty.gd in the browser!</title>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #111;
+                color: #eee;
+                text-align: center;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            textarea {
+                background-color: #222;
+                color: #def;
+                width: 95vw;
+            }
+
+            a,
+            a:link,
+            a:visited {
+                color: #9cf;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1> <img src="../images/pretty.png" alt="logo" height="32" /> pretty.gd in the browser! </h1>
+    <textarea id="codeTxt" cols="80" rows="32" wrap="off" autocomplete="off" autocorrect="off"
+        spellcheck="false"></textarea>
+    <p>
+        <label for="indentTxt"><code>indent</code> =</label>
+        <input id="indentTxt" type="text" />
+    </p>
+    <p>
+        <label for="tabSizeTxt"><code>tabSize</code> =</label>
+        <input id="tabSizeTxt" type="number" />
+    </p>
+    <p>
+        <label for="isInsideStringTxt"><code>isInsideString</code> =</label>
+        <input id="isInsideStringTxt" type="text" />
+        <input type="checkbox" id="feedbackChk">
+        <label for="feedbackChk"><code>startInsideString</code></label>
+    </p>
+    <p>
+        <button id="prettyBtn" title="Ctrl + Enter">Prettify!🎀</button>
+    </p>
+    <p id="statusEl"></p>
+    <script type="module">
+        import pretty from "https://cdn.jsdelivr.net/npm/pretty-gd-js/+esm"
+        // import pretty from "../index.js"
+
+        const codeTxt = document.getElementById("codeTxt"),
+            indentTxt = document.getElementById("indentTxt"),
+            tabSizeTxt = document.getElementById("tabSizeTxt"),
+            isInsideStringTxt = document.getElementById("isInsideStringTxt"),
+            feedbackChk = document.getElementById("feedbackChk"),
+            prettyBtn = document.getElementById("prettyBtn"),
+            statusEl = document.getElementById("statusEl")
+
+        let timeout
+
+        async function init() {
+            // codeTxt.addEventListener("keyup", e => {
+            //     clearTimeout(timeout)
+            //     timeout = setTimeout(prettify, 1024)
+            // })
+            indentTxt.addEventListener("change", e => pretty.indent = JSON.parse(indentTxt.value))
+            tabSizeTxt.addEventListener("change", e => pretty.tabSize = JSON.parse(tabSizeTxt.value))
+            isInsideStringTxt.addEventListener("change", e => pretty.isInsideString = JSON.parse(isInsideStringTxt.value))
+            prettyBtn.addEventListener("click", prettify)
+
+            addEventListener("keydown", e => {
+                if ((e.ctrlKey || e.metaKey) && (e.key == "Enter")) prettify()
+            })
+
+            codeTxt.value = localStorage.getItem(location.pathname + "#code")
+            if (!codeTxt.value.trim()) codeTxt.value = await (await fetch("example.gd")).text()
+            prettify()
+        }
+
+        function prettify() {
+            let s = codeTxt.selectionStart
+            let e = codeTxt.selectionEnd
+
+            if (feedbackChk.checked) codeTxt.value = pretty.prettify(codeTxt.value, JSON.parse(isInsideStringTxt.value))
+            else codeTxt.value = pretty.prettify(codeTxt.value)
+
+            indentTxt.value = JSON.stringify(pretty.indent)
+            tabSizeTxt.value = JSON.stringify(pretty.tabSize)
+            isInsideStringTxt.value = JSON.stringify(pretty.isInsideString)
+
+            codeTxt.selectionStart = s
+            codeTxt.selectionEnd = e
+            localStorage.setItem(location.pathname + "#code", codeTxt.value)
+
+            let now = new Date()
+            statusEl.textContent = "Last run:" + now.toLocaleString()
+        }
+
+        init()
+    </script>
+</body>
+
+</html>
