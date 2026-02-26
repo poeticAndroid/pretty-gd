@@ -40,7 +40,7 @@ static func read_line(min_indent=0,max_indent=10):
 	first_words=[]
 	last_token=""
 	if is_eol():return read().strip_edges()
-	var indent= clamp(ceil( space_size(line)/tab_size ),min_indent,max_indent)
+	var indent= clamp(ceil( (space_size(line)+tab_size-1)/tab_size ),min_indent,max_indent)
 	line=""
 	for i in range(indent):
 		line+=indent_str
