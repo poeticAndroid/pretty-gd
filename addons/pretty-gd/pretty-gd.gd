@@ -48,16 +48,17 @@ func _on_tick():
 			var pretty = Prettifier.prettify(dirty) + "\n"
 			if pretty and dirty != pretty:
 				var lines = pretty.split("\n")
-				while ed.get_line_count() < lines.size():
-					ed.insert_line_at(ed.get_line_count() - 1, "")
-				for line_num in range(ed.get_line_count()):
-					while lines[line_num] and not ed.get_line(line_num):
-						ed.remove_line_at(line_num)
-						ed.insert_line_at(ed.get_line_count() - 1, "#")
-					if ed.get_line(line_num) and not lines[line_num]:
-						ed.insert_line_at(line_num, "")
-					#if line_num == row: continue
+				#while ed.get_line_count() < lines.size():
+					#ed.insert_line_at(ed.get_line_count() - 1, "")
+				for line_num in range(max(lines.size(), ed.get_line_count())):
 					if line_num < lines.size():
+						while lines[line_num] and not ed.get_line(line_num):
+							ed.remove_line_at(line_num)
+							ed.insert_line_at(ed.get_line_count() - 1, "#")
+						if ed.get_line(line_num) and not lines[line_num]:
+							ed.insert_line_at(line_num, "")
+						if line_num >= ed.get_line_count():
+							ed.insert_line_at(line_num, "")
 						ed.set_line(line_num, lines[line_num])
 					else:
 						ed.set_line(line_num, "")
