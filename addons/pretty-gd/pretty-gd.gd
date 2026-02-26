@@ -1,27 +1,29 @@
 @tool
 extends EditorPlugin
 
+var enabled
+var timer
 
-func _enable_plugin() -> void:
-	# Add autoloads here.
-	pass
-
-
-func _disable_plugin() -> void:
-	# Remove autoloads here.
-	pass
+var _last_line
 
 
 func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
+	print("entering pretty.gd pluging")
 	resource_saved.connect(_on_resource_saved)
-	pass
+	timer = Timer.new()
+	get_tree().root.add_child(timer)
+	timer.timeout.connect(_on_tick)
+	timer.start()
+	enabled = true
 
 
 func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
+	print("exiting pretty.gd pluging")
 	resource_saved.disconnect(_on_resource_saved)
-	pass
+	timer.queue_free()
+	enabled = false
 
 
 func _on_resource_saved(res: Resource):
@@ -34,3 +36,12 @@ func _on_resource_saved(res: Resource):
 			var file = FileAccess.open(res.resource_path, FileAccess.WRITE)
 			file.store_string(pretty)
 			file.close()
+
+
+func _on_tick():
+	var editor = EditorInterface.get_script_editor().get_current_editor()
+	if editor:
+		var line = editor.get_base_editor().get_caret_line()
+		if _last_line != line:
+			editor.get_base_editor().text = Prettifier.prettify(editor.get_base_editor().text)
+		_last_line = line
