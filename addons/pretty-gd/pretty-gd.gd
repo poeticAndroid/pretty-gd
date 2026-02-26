@@ -4,7 +4,7 @@ extends EditorPlugin
 var enabled
 var timer
 
-var _last_row = -1
+var _last_row = 0
 
 
 func _enter_tree() -> void:
@@ -43,17 +43,22 @@ func _on_tick():
 	if editor:
 		var ed = editor.get_base_editor()
 		var row = ed.get_caret_line()
-		if _last_row != row:
+		if abs(_last_row - row) > 1:
 			var dirty = ed.text
 			var pretty = Prettifier.prettify(dirty) + "\n"
 			if pretty and dirty != pretty:
 				var lines = pretty.split("\n")
 				while ed.get_line_count() < lines.size():
-					ed.insert_line_at(ed.get_line_count() - 1, "# inserted line")
+					ed.insert_line_at(ed.get_line_count() - 1, "")
 				for line_num in range(ed.get_line_count()):
-					if line_num == row and ed.get_line(line_num): continue
+					while lines[line_num] and not ed.get_line(line_num):
+						ed.remove_line_at(line_num)
+						ed.insert_line_at(ed.get_line_count() - 1, "#")
+					if ed.get_line(line_num) and not lines[line_num]:
+						ed.insert_line_at(line_num, "")
+					#if line_num == row: continue
 					if line_num < lines.size():
 						ed.set_line(line_num, lines[line_num])
 					else:
-						ed.set_line(line_num, "# deleted line")
-		_last_row = row
+						ed.set_line(line_num, "")
+			_last_row = row
