@@ -4,7 +4,7 @@ extends EditorPlugin
 var enabled
 var timer
 
-var _last_line
+var _last_row
 
 
 func _enter_tree() -> void:
@@ -37,11 +37,29 @@ func _on_resource_saved(res: Resource):
 			file.store_string(pretty)
 			file.close()
 
-
 func _on_tick():
 	var editor = EditorInterface.get_script_editor().get_current_editor()
 	if editor:
-		var line = editor.get_base_editor().get_caret_line()
-		if _last_line != line:
-			editor.get_base_editor().text = Prettifier.prettify(editor.get_base_editor().text)
-		_last_line = line
+		var ed = editor.get_base_editor()
+		var row = ed.get_caret_line()
+		if _last_row > row:
+			var dirty = ed.text
+			var pretty = Prettifier.prettify(dirty) + "\n"
+			if pretty and dirty != pretty:
+				var lines = pretty.split("\n")
+				while ed.get_line_count() < lines.size():
+					ed.insert_line_at(ed.get_line_count(), "#")
+				for line_num in range(max(ed.get_line_count(), lines.size())):
+					if line_num < lines.size():
+						ed.set_line(line_num, lines[line_num])
+					else:
+						ed.set_line(line_num, "")
+		_last_row = row
+
+#
+#
+#
+#
+#
+#
+#
