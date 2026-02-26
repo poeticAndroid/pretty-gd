@@ -31,6 +31,7 @@ func _exit_tree() -> void:
 func _on_resource_saved(res:Resource):
 	print("_on_resource_saved: ",res.resource_path)
 	if res.resource_path.ends_with(".gd"):
+		await get_tree().create_timer(1).timeout
 		var dirty=FileAccess.get_file_as_string(res.resource_path)
 		var pretty=Prettifier.prettify(dirty)
 		if dirty!=pretty:
