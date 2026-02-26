@@ -30,7 +30,13 @@ func _exit_tree() -> void:
 
 func _on_resource_saved(res:Resource):
 	print("_on_resource_saved: ",res.resource_path)
-	
+	if res.resource_path.ends_with(".gd"):
+		var dirty=FileAccess.get_file_as_string(res.resource_path)
+		var pretty=Prettifier.prettify(dirty)
+		if dirty!=pretty:
+			var file=FileAccess.open(res.resource_path,FileAccess.WRITE)
+			file.store_string(pretty)
+			file.close()
 	
 	
 	
