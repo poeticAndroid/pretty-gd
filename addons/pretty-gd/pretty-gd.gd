@@ -33,8 +33,9 @@ func _on_resource_saved(res:Resource):
 	if res.resource_path.ends_with(".gd"):
 		await get_tree().create_timer(1).timeout
 		var dirty=FileAccess.get_file_as_string(res.resource_path)
-		var pretty=Prettifier.prettify(dirty)
-		if dirty!=pretty:
+		var pretty=Prettifier.prettify(dirty)+"\n"
+		if pretty and dirty!=pretty:
+			print(res.resource_path," is dirty!")
 			var file=FileAccess.open(res.resource_path,FileAccess.WRITE)
 			file.store_string(pretty)
 			file.close()
