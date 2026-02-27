@@ -5,10 +5,12 @@ var timer
 var unsaved
 
 var _last_modified = 0
+var _changed_scripts = []
 
 
 func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
+	EditorInterface.get_script_editor().editor_script_changed.connect(_on_editor_script_changed)
 	scene_saved.connect(_on_scene_saved)
 	timer = Timer.new()
 	get_tree().root.add_child(timer)
@@ -19,9 +21,16 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
+	EditorInterface.get_script_editor().editor_script_changed.disconnect(_on_editor_script_changed)
 	scene_saved.disconnect(_on_scene_saved)
 	if timer: timer.queue_free()
 	print("pretty.gd disabled 💩")
+
+
+func _on_editor_script_changed(script):
+	if _changed_scripts.has(script.resource_path):
+		_changed_scripts.erase(script.resource_path)
+		pretty_editor()
 
 
 func _on_scene_saved(path: String):
@@ -34,6 +43,9 @@ func _on_tick():
 
 	if pretty_editor():
 		EditorInterface.save_scene()
+		var script = EditorInterface.get_script_editor().get_current_script()
+		if not script: return false
+		print("pretty.gd: ", script.resource_path, " 🎀")
 	else:
 		pretty_dir()
 
@@ -67,7 +79,6 @@ func pretty_editor():
 		else:
 			if ed.get_line(line_num):
 				ed.set_line(line_num, "")
-	print("pretty.gd: ", script.resource_path, " 🎀")
 	return true
 
 
@@ -97,4 +108,6 @@ func pretty_file(path, since = 0):
 	file.store_string(pretty)
 	file.close()
 	print("pretty.gd: ", path, " 🎀")
+	if not _changed_scripts.has(path):
+		_changed_scripts.push_back(path)
 	return true
