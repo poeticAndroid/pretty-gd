@@ -30,7 +30,9 @@ static func prettify(_input: String) -> String:
 			if last_token == ":":
 				max_indent += -1
 				min_indent = max_indent
-		elif not output.ends_with("\n\n"): output += "\n"
+		elif not output.ends_with("\n\n"):
+			min_indent = 0
+			output += "\n"
 	return output.strip_edges(false, true)
 
 
@@ -239,6 +241,7 @@ static func space_size(whitespace):
 
 			" ":
 				sum += 1
+
 			_:
 				return sum
 	return sum
