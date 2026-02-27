@@ -1,45 +1,47 @@
 @tool
 extends EditorPlugin
 
-var enabled
 var timer
+var unsaved
 
 var _last_modified = 0
 
 
 func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
-	print("entering pretty.gd pluging")
 	scene_saved.connect(_on_scene_saved)
-	#timer = Timer.new()
-	#get_tree().root.add_child(timer)
-	#timer.timeout.connect(_on_tick)
-	#timer.start()
-	enabled = true
+	timer = Timer.new()
+	get_tree().root.add_child(timer)
+	timer.timeout.connect(_on_tick)
+	timer.start()
+	print("pretty.gd enabled 🎀")
 
 
 func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
-	print("exiting pretty.gd pluging")
 	scene_saved.disconnect(_on_scene_saved)
 	if timer: timer.queue_free()
-	enabled = false
+	print("pretty.gd disabled 💩")
 
 
 func _on_scene_saved(path: String):
-	print("_on_scene_saved ", path)
-	if pretty_editor():
-		await get_tree().create_timer(1).timeout
-		EditorInterface.save_scene()
-		return
-	pretty_dir()
+	unsaved = true
 
 
 func _on_tick():
-	pretty_dir()
+	if not unsaved: return
+	unsaved = false
+
+	if pretty_editor():
+		EditorInterface.save_scene()
+	else:
+		pretty_dir()
 
 
 func pretty_editor():
+	var script = EditorInterface.get_script_editor().get_current_script()
+	if not script: return false
+	if not script.resource_path.ends_with(".gd"): return false
 	var editor = EditorInterface.get_script_editor().get_current_editor()
 	if not editor: return false
 
@@ -65,6 +67,7 @@ func pretty_editor():
 		else:
 			if ed.get_line(line_num):
 				ed.set_line(line_num, "")
+	print("pretty.gd: ", script.resource_path, " 🎀")
 	return true
 
 
