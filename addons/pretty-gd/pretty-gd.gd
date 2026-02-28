@@ -1,15 +1,23 @@
 @tool
 extends EditorPlugin
 
+var included_paths = ["res://"]
+var excluded_paths = ["res://addons/"]
+
 var timer
 var unsaved
 
 var _last_modified = 0
 var _changed_scripts = []
 
+const SETTINGS_PATH = "pretty-gd/"
+var Prettifier = preload("res://addons/pretty-gd/pretty.gd").new()
+
 
 func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
+	_on_settings_changed()
+	EditorInterface.get_editor_settings().settings_changed.connect(_on_settings_changed)
 	EditorInterface.get_script_editor().editor_script_changed.connect(_on_editor_script_changed)
 	scene_saved.connect(_on_scene_saved)
 	timer = Timer.new()
@@ -21,10 +29,35 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
+	EditorInterface.get_editor_settings().settings_changed.disconnect(_on_settings_changed)
 	EditorInterface.get_script_editor().editor_script_changed.disconnect(_on_editor_script_changed)
 	scene_saved.disconnect(_on_scene_saved)
 	if timer: timer.queue_free()
 	print("pretty.gd disabled 💩")
+
+
+func _on_settings_changed():
+	var settings = EditorInterface.get_editor_settings()
+	#settings.erase(SETTINGS_PATH + "included_paths")
+	#settings.erase(SETTINGS_PATH + "excluded_paths")
+	#return
+
+	if not settings.has_setting(SETTINGS_PATH + "included_paths"):
+		settings.set_setting(SETTINGS_PATH + "included_paths", "".join(included_paths))
+		settings.add_property_info({ name = SETTINGS_PATH + "included_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
+	if not settings.has_setting(SETTINGS_PATH + "excluded_paths"):
+		settings.set_setting(SETTINGS_PATH + "excluded_paths", "".join(excluded_paths))
+		settings.add_property_info({ name = SETTINGS_PATH + "excluded_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
+
+	included_paths = settings.get_setting(SETTINGS_PATH + "included_paths").split("\n", false)
+	excluded_paths = settings.get_setting(SETTINGS_PATH + "excluded_paths").split("\n", false)
+
+	Prettifier.tab_size = settings.get_setting("text_editor/behavior/indent/size")
+	if settings.get_setting("text_editor/behavior/indent/type"):
+		Prettifier.indent_str = " ".repeat(Prettifier.tab_size)
+	else:
+		Prettifier.indent_str = "\t"
+	print("_on_settings_changed: Tab settings: ", JSON.stringify(Prettifier.indent_str), ", ", Prettifier.tab_size)
 
 
 func _on_editor_script_changed(script):
@@ -47,13 +80,16 @@ func _on_tick():
 		if not script: return false
 		print("pretty.gd: ", script.resource_path, " 🎀")
 	else:
-		pretty_dir()
+		for included in included_paths:
+			pretty_dir(included)
 
 
 func pretty_editor():
 	var script = EditorInterface.get_script_editor().get_current_script()
 	if not script: return false
 	if not script.resource_path.ends_with(".gd"): return false
+	for excluded in excluded_paths:
+		if script.resource_path.begins_with(excluded): return false
 	var editor = EditorInterface.get_script_editor().get_current_editor()
 	if not editor: return false
 
@@ -83,6 +119,8 @@ func pretty_editor():
 
 
 func pretty_dir(path = "res://", since = _last_modified):
+	for excluded in excluded_paths:
+		if path.begins_with(excluded): return false
 	var files = DirAccess.get_files_at(path)
 	for file in files:
 		pretty_file(path + file, since)
@@ -93,6 +131,8 @@ func pretty_dir(path = "res://", since = _last_modified):
 
 func pretty_file(path, since = 0):
 	if not path.ends_with(".gd"): return
+	for excluded in excluded_paths:
+		if path.begins_with(excluded): return false
 	var modified = FileAccess.get_modified_time(path)
 	if modified <= since: return
 
