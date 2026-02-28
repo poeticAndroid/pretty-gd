@@ -1,15 +1,15 @@
 class_name Prettifier
 
-static var indent_str = "\t"
-static var tab_size = 4
+var indent_str = "\t"
+var tab_size = 4
 
-static var input = ""
-static var pos = 0
-static var first_words = []
-static var last_token = ""
+var input = ""
+var pos = 0
+var first_words = []
+var last_token = ""
 
 
-static func prettify(_input: String) -> String:
+func prettify(_input: String) -> String:
 	input = _input
 	pos = 0
 	if not indent_str: indent_str = "\t"
@@ -36,7 +36,7 @@ static func prettify(_input: String) -> String:
 	return output.strip_edges(false, true)
 
 
-static func read_line(min_indent = 0, max_indent = 10):
+func read_line(min_indent = 0, max_indent = 10):
 	var line = read_whitespace()
 	first_words = []
 	last_token = ""
@@ -55,7 +55,7 @@ static func read_line(min_indent = 0, max_indent = 10):
 	return line.strip_edges(false, true)
 
 
-static func read_token():
+func read_token():
 	var token = ""
 	read_whitespace()
 	if longoperators.has(peek(4)):
@@ -90,7 +90,7 @@ static func read_token():
 	return token
 
 
-static func read_node():
+func read_node():
 	var token = read().to_lower()
 	if string.containsn(peek()):
 		token += read_string()
@@ -99,7 +99,7 @@ static func read_node():
 	return token
 
 
-static func read_string():
+func read_string():
 	var token = ""
 	var quot = read().to_lower()
 	if string.containsn(quot):
@@ -116,7 +116,7 @@ static func read_string():
 	return token
 
 
-static func read_number():
+func read_number():
 	var token = ""
 	var reg = peek()
 	while reg.containsn(peek()):
@@ -143,54 +143,54 @@ static func read_number():
 	return token
 
 
-static func read_word():
+func read_word():
 	var token = ""
 	while peek().strip_edges():
 		token += read()
 	return token
 
 
-static func read_whitespace():
+func read_whitespace():
 	var token = ""
 	while not is_eol() and not peek().strip_edges():
 		token += read()
 	return token
 
 
-static func read_while(charset):
+func read_while(charset):
 	var output = ""
 	while charset.containsn(peek()) or (charset.containsn("ø") and peek().unicode_at(0) > 127):
 		output += read()
 	return output
 
 
-static func read_until(delimiter):
+func read_until(delimiter):
 	var output = ""
 	while peek(delimiter.length()) != delimiter and not is_eof():
 		output += read()
 	return output
 
 
-static func read(len = 1):
+func read(len = 1):
 	if is_eof(): return ""
 	pos += len
 	return input.substr(pos - len, len)
 
 
-static func peek(len = 1, skip = 0):
+func peek(len = 1, skip = 0):
 	if is_eof(): return ""
 	return input.substr(pos + skip, len)
 
 
-static func is_eol():
+func is_eol():
 	return is_eof() or peek() == "\n"
 
 
-static func is_eof():
+func is_eof():
 	return pos >= input.length()
 
 
-static func between(token0, token1, token2):
+func between(token0, token1, token2):
 	if !token1: return ""
 	if !token2: return ""
 	if token2.begins_with("#"): return "  "
@@ -222,12 +222,12 @@ static func between(token0, token1, token2):
 	return ""
 
 
-static func get_first_words(line):
+func get_first_words(line):
 	return Array(line.strip_edges().get_slice("#", 0).get_slice("'", 0).get_slice('"', 0).split(" ", false))
 
 
-static func space_size(whitespace):
-	if !whitespace: return 0
+func space_size(whitespace):
+	if not whitespace: return 0
 	if not tab_size: tab_size = 4
 	var sum = 0
 	for char in whitespace:

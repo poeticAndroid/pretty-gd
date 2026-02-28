@@ -1,5 +1,7 @@
 extends Node2D
 
+var Prettifier = preload("res://addons/pretty-gd/pretty.gd").new()
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
