@@ -38,16 +38,13 @@ func _exit_tree() -> void:
 
 func _on_settings_changed():
 	var settings = EditorInterface.get_editor_settings()
-	#settings.erase(SETTINGS_PATH + "included_paths")
-	#settings.erase(SETTINGS_PATH + "excluded_paths")
-	#return
 
 	if not settings.has_setting(SETTINGS_PATH + "included_paths"):
-		settings.set_setting(SETTINGS_PATH + "included_paths", "".join(included_paths))
-		settings.add_property_info({ name = SETTINGS_PATH + "included_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
+		settings.set_setting(SETTINGS_PATH + "included_paths", "\n".join(included_paths))
+	settings.add_property_info({ name = SETTINGS_PATH + "included_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
 	if not settings.has_setting(SETTINGS_PATH + "excluded_paths"):
-		settings.set_setting(SETTINGS_PATH + "excluded_paths", "".join(excluded_paths))
-		settings.add_property_info({ name = SETTINGS_PATH + "excluded_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
+		settings.set_setting(SETTINGS_PATH + "excluded_paths", "\n".join(excluded_paths))
+	settings.add_property_info({ name = SETTINGS_PATH + "excluded_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
 
 	included_paths = settings.get_setting(SETTINGS_PATH + "included_paths").split("\n", false)
 	excluded_paths = settings.get_setting(SETTINGS_PATH + "excluded_paths").split("\n", false)
@@ -57,7 +54,6 @@ func _on_settings_changed():
 		Prettifier.indent_str = " ".repeat(Prettifier.tab_size)
 	else:
 		Prettifier.indent_str = "\t"
-	print("_on_settings_changed: Tab settings: ", JSON.stringify(Prettifier.indent_str), ", ", Prettifier.tab_size)
 
 
 func _on_editor_script_changed(script):
