@@ -10,12 +10,14 @@ No Python! No binaries! No dependencies!
 
 ### Godot editor
 
-1. Install the plugin in the `res://addons/` folder.
-2. Adjust editor settings to your liking.
+1. Backup or commit your code first, just in case! 
+2. Install the plugin in the `res://addons/` folder.
+3. Enable the plugin in project settings.
+4. Adjust editor settings to your liking.
 
 ![Editor Settings window](./images/settings.png)
 
-3. Profit! Your GDScripts will be prettified automatically when you save.
+5. Profit! Your GDScripts will be prettified automatically when you save.
 
 ### GDScript API
 
@@ -47,6 +49,10 @@ func _ready():
 If you come across any other issues with using this software, please [let me know](https://github.com/poeticAndroid/pretty-gd/issues).
 
 ## Release Notes
+
+### 0.2
+
+ - Important bugfixes to the tokenizer!
 
 ### 0.1
 
