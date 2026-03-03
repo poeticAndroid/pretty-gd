@@ -57,6 +57,9 @@ func _on_settings_changed():
 
 
 func _on_editor_script_changed(script):
+	if not script: return
+	if not is_valid_script(script.resource_path): return false
+
 	if _changed_scripts.has(script.resource_path):
 		_changed_scripts.erase(script.resource_path)
 		pretty_editor()
@@ -83,9 +86,7 @@ func _on_tick():
 func pretty_editor():
 	var script = EditorInterface.get_script_editor().get_current_script()
 	if not script: return false
-	if not script.resource_path.ends_with(".gd"): return false
-	for excluded in excluded_paths:
-		if script.resource_path.begins_with(excluded): return false
+	if not is_valid_script(script.resource_path): return false
 	var editor = EditorInterface.get_script_editor().get_current_editor()
 	if not editor: return false
 
@@ -119,16 +120,16 @@ func pretty_dir(path = "res://", since = _last_modified):
 		if path.begins_with(excluded): return false
 	var files = DirAccess.get_files_at(path)
 	for file in files:
-		pretty_file(path + file, since)
+		if not file.begins_with("."):
+			pretty_file(path + file, since)
 	var dirs = DirAccess.get_directories_at(path)
 	for dir in dirs:
-		pretty_dir(path + dir + "/", since)
+		if not dir.begins_with("."):
+			pretty_dir(path + dir + "/", since)
 
 
 func pretty_file(path, since = 0):
-	if not path.ends_with(".gd"): return
-	for excluded in excluded_paths:
-		if path.begins_with(excluded): return false
+	if not is_valid_script(path): return false
 	var modified = FileAccess.get_modified_time(path)
 	if modified <= since: return
 
@@ -147,3 +148,13 @@ func pretty_file(path, since = 0):
 	if not _changed_scripts.has(path):
 		_changed_scripts.push_back(path)
 	return true
+
+
+func is_valid_script(path):
+	if path.contains("/."): return false
+	if not path.ends_with(".gd"): return false
+	for excluded in excluded_paths:
+		if path.begins_with(excluded): return false
+	for included in included_paths:
+		if path.begins_with(included): return true
+	return false
