@@ -53,6 +53,7 @@ If you come across any other issues with using this software, please [let me kno
 ### 0.2
 
  - Important bugfixes to the tokenizer!
+ - More granular controls in the editor settings.
 
 ### 0.1
 
