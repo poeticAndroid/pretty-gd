@@ -48,6 +48,10 @@ If you come across any other issues with using this software, please [let me kno
 
 ## Release Notes
 
+### 0.2
+
+ - Important bugfixes to the tokenizer!
+
 ### 0.1
 
  - First release! 🎉

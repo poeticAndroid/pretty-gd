@@ -66,8 +66,6 @@ func read_token():
 		token += read(2)
 	elif peek() == "#":
 		token += read_until("\n")
-	elif peek() == "r" and string.containsn(peek(1, 1)):
-		token += read() + read_string()
 	elif peek() == "@" and identifier.containsn(peek(1, 1)):
 		token += read() + read_while(identifier)
 	elif peek() == "." and number.containsn(peek(1, 1)):
@@ -92,7 +90,7 @@ func read_token():
 
 func read_node():
 	var token = read().to_lower()
-	if string.containsn(peek()):
+	if quote.containsn(peek()):
 		token += read_string()
 	else:
 		token += read_while(nodepath)
