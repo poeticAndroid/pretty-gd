@@ -3,12 +3,15 @@ extends EditorPlugin
 
 var included_paths = ["res://"]
 var excluded_paths = ["res://addons/"]
+var is_enabled_pretty_focus = true
+var is_enabled_pretty_editor = true
+var is_enabled_pretty_dir = true
 
 var timer
 var unsaved
 
 var _last_modified = 0
-var _changed_scripts = []
+#var _changed_scripts = []
 
 const SETTINGS_PATH = "pretty-gd/"
 var Prettifier = preload("res://addons/pretty-gd/pretty.gd").new()
@@ -19,6 +22,7 @@ func _enter_tree() -> void:
 	_on_settings_changed()
 	EditorInterface.get_editor_settings().settings_changed.connect(_on_settings_changed)
 	EditorInterface.get_script_editor().editor_script_changed.connect(_on_editor_script_changed)
+	get_window().focus_entered.connect(_on_editor_script_changed)
 	scene_saved.connect(_on_scene_saved)
 	timer = Timer.new()
 	get_tree().root.add_child(timer)
@@ -31,6 +35,7 @@ func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
 	EditorInterface.get_editor_settings().settings_changed.disconnect(_on_settings_changed)
 	EditorInterface.get_script_editor().editor_script_changed.disconnect(_on_editor_script_changed)
+	get_window().focus_entered.disconnect(_on_editor_script_changed)
 	scene_saved.disconnect(_on_scene_saved)
 	if timer: timer.queue_free()
 	print("pretty.gd disabled 💩")
@@ -45,9 +50,18 @@ func _on_settings_changed():
 	if not settings.has_setting(SETTINGS_PATH + "excluded_paths"):
 		settings.set_setting(SETTINGS_PATH + "excluded_paths", "\n".join(excluded_paths))
 	settings.add_property_info({ name = SETTINGS_PATH + "excluded_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
+	if not settings.has_setting(SETTINGS_PATH + "pretty_editor_on_focus"):
+		settings.set_setting(SETTINGS_PATH + "pretty_editor_on_focus", is_enabled_pretty_focus)
+	if not settings.has_setting(SETTINGS_PATH + "pretty_editor_on_save"):
+		settings.set_setting(SETTINGS_PATH + "pretty_editor_on_save", is_enabled_pretty_editor)
+	if not settings.has_setting(SETTINGS_PATH + "pretty_filesystem_on_save"):
+		settings.set_setting(SETTINGS_PATH + "pretty_filesystem_on_save", is_enabled_pretty_dir)
 
 	included_paths = settings.get_setting(SETTINGS_PATH + "included_paths").split("\n", false)
 	excluded_paths = settings.get_setting(SETTINGS_PATH + "excluded_paths").split("\n", false)
+	is_enabled_pretty_focus = settings.get_setting(SETTINGS_PATH + "pretty_editor_on_focus")
+	is_enabled_pretty_editor = settings.get_setting(SETTINGS_PATH + "pretty_editor_on_save")
+	is_enabled_pretty_dir = settings.get_setting(SETTINGS_PATH + "pretty_filesystem_on_save")
 
 	Prettifier.tab_size = settings.get_setting("text_editor/behavior/indent/size")
 	if settings.get_setting("text_editor/behavior/indent/type"):
@@ -56,12 +70,8 @@ func _on_settings_changed():
 		Prettifier.indent_str = "\t"
 
 
-func _on_editor_script_changed(script):
-	if not script: return
-	if not is_valid_script(script.resource_path): return false
-
-	if _changed_scripts.has(script.resource_path):
-		_changed_scripts.erase(script.resource_path)
+func _on_editor_script_changed(script = null):
+	if is_enabled_pretty_focus:
 		pretty_editor()
 
 
@@ -73,7 +83,7 @@ func _on_tick():
 	if not unsaved: return
 	unsaved = false
 
-	if pretty_editor():
+	if is_enabled_pretty_editor and pretty_editor():
 		EditorInterface.save_scene()
 		var script = EditorInterface.get_script_editor().get_current_script()
 		if not script: return false
@@ -116,6 +126,7 @@ func pretty_editor():
 
 
 func pretty_dir(path = "res://", since = _last_modified):
+	if not is_enabled_pretty_dir: return false
 	for excluded in excluded_paths:
 		if path.begins_with(excluded): return false
 	var files = DirAccess.get_files_at(path)
@@ -145,8 +156,8 @@ func pretty_file(path, since = 0):
 	file.store_string(pretty)
 	file.close()
 	print("pretty.gd: ", path, " 🎀")
-	if not _changed_scripts.has(path):
-		_changed_scripts.push_back(path)
+	#if not _changed_scripts.has(path):
+		#_changed_scripts.push_back(path)
 	return true
 
 
