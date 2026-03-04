@@ -98,8 +98,7 @@ func fadeout_music():
 func go_back(fade: bool = true):
 	if loading:
 		return false
-	if get_tree().get_node_count_in_group("touch_controller"):
-		TouchControls.disengage()
+
 	history.pop_back()
 	if history.size():
 		goto_scene(history.pop_back(), fade)

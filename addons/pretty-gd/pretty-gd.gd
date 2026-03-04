@@ -4,6 +4,7 @@ extends EditorPlugin
 var included_paths = ["res://"]
 var excluded_paths = ["res://addons/"]
 var is_enabled_prettify_focus = true
+var is_enabled_prettify_line = false
 var is_enabled_prettify_editor = true
 var is_enabled_prettify_dir = false
 
@@ -11,6 +12,7 @@ var timer
 var unsaved
 
 var _last_modified = 0
+var _last_line = 0
 
 const SETTINGS_PATH = "pretty-gd/"
 var Prettifier = preload("res://addons/pretty-gd/pretty.gd").new()
@@ -54,6 +56,8 @@ func _on_settings_changed():
 	settings.add_property_info({ name = SETTINGS_PATH + "excluded_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
 	if not settings.has_setting(SETTINGS_PATH + "prettify_editor_on_focus"):
 		settings.set_setting(SETTINGS_PATH + "prettify_editor_on_focus", is_enabled_prettify_focus)
+	if not settings.has_setting(SETTINGS_PATH + "prettify_editor_on_line_change"):
+		settings.set_setting(SETTINGS_PATH + "prettify_editor_on_line_change", is_enabled_prettify_line)
 	if not settings.has_setting(SETTINGS_PATH + "prettify_editor_on_save"):
 		settings.set_setting(SETTINGS_PATH + "prettify_editor_on_save", is_enabled_prettify_editor)
 	if not settings.has_setting(SETTINGS_PATH + "prettify_filesystem_on_save"):
@@ -62,6 +66,7 @@ func _on_settings_changed():
 	included_paths = settings.get_setting(SETTINGS_PATH + "included_paths").split("\n", false)
 	excluded_paths = settings.get_setting(SETTINGS_PATH + "excluded_paths").split("\n", false)
 	is_enabled_prettify_focus = settings.get_setting(SETTINGS_PATH + "prettify_editor_on_focus")
+	is_enabled_prettify_line = settings.get_setting(SETTINGS_PATH + "prettify_editor_on_line_change")
 	is_enabled_prettify_editor = settings.get_setting(SETTINGS_PATH + "prettify_editor_on_save")
 	is_enabled_prettify_dir = settings.get_setting(SETTINGS_PATH + "prettify_filesystem_on_save")
 
@@ -82,6 +87,16 @@ func _on_scene_saved(path: String):
 
 
 func _on_tick():
+	var editor = EditorInterface.get_script_editor().get_current_editor()
+	if is_enabled_prettify_line and editor:
+		var ed = editor.get_base_editor()
+		var line = ed.get_caret_line()
+		if _last_line > line:
+			prettify_editor()
+		if _last_line < line:
+			prettify_editor(line)
+		_last_line = line
+
 	if not unsaved: return
 	unsaved = false
 
@@ -95,7 +110,7 @@ func _on_tick():
 			prettify_dir(included)
 
 
-func prettify_editor():
+func prettify_editor(until_line = INF):
 	var script = EditorInterface.get_script_editor().get_current_script()
 	if not script: return false
 	if not is_valid_script(script.resource_path): return false
@@ -111,6 +126,7 @@ func prettify_editor():
 
 	var lines = pretty.split("\n")
 	for line_num in range(max(lines.size(), ed.get_line_count())):
+		if line_num >= until_line: break
 		if line_num < lines.size():
 			while lines[line_num].strip_edges() and not ed.get_line(line_num).strip_edges():
 				ed.remove_line_at(line_num)

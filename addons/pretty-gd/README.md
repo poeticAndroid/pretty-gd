@@ -50,10 +50,17 @@ If you come across any other issues with using this software, please [let me kno
 
 ## Release Notes
 
+### 0.3
+
+ - Added setting to prettify editor on line changes.
+ - Settings renamed `pretty` to `prettify`
+
+
 ### 0.2
 
  - Important bugfixes to the tokenizer!
  - More granular controls in the editor settings.
+
 
 ### 0.1
 
