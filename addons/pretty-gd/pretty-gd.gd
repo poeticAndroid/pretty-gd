@@ -113,8 +113,7 @@ func _on_tick():
 		if not script: return false
 		print("pretty.gd: ", script.resource_path, " 🎀")
 	else:
-		if not is_enabled_prettify_focus:
-			await get_tree().create_timer(1).timeout
+		await get_tree().create_timer(1).timeout
 		for included in included_paths:
 			prettify_dir(included)
 
