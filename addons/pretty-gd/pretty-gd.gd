@@ -24,6 +24,7 @@ func _enter_tree() -> void:
 	EditorInterface.get_editor_settings().settings_changed.connect(_on_settings_changed)
 	EditorInterface.get_script_editor().editor_script_changed.connect(_on_editor_script_changed)
 	get_window().focus_entered.connect(_on_editor_script_changed)
+	get_window().window_input.connect(_on_input)
 	scene_saved.connect(_on_scene_saved)
 	timer = Timer.new()
 	get_tree().root.add_child(timer)
@@ -37,6 +38,7 @@ func _exit_tree() -> void:
 	EditorInterface.get_editor_settings().settings_changed.disconnect(_on_settings_changed)
 	EditorInterface.get_script_editor().editor_script_changed.disconnect(_on_editor_script_changed)
 	get_window().focus_entered.disconnect(_on_editor_script_changed)
+	get_window().window_input.disconnect(_on_input)
 	scene_saved.disconnect(_on_scene_saved)
 	if timer: timer.queue_free()
 	print("pretty.gd disabled 💩")
@@ -82,11 +84,10 @@ func _on_editor_script_changed(script = null):
 		prettify_editor()
 
 
-func _on_scene_saved(path: String):
-	unsaved = true
+func _on_input(input: InputEvent):
+	if not(input is InputEventKey or input is InputEventMouseButton): return
+	if input.is_pressed(): return
 
-
-func _on_tick():
 	var editor = EditorInterface.get_script_editor().get_current_editor()
 	if is_enabled_prettify_line and editor:
 		var ed = editor.get_base_editor()
@@ -97,6 +98,12 @@ func _on_tick():
 			prettify_editor(line)
 		_last_line = line
 
+
+func _on_scene_saved(path: String):
+	unsaved = true
+
+
+func _on_tick():
 	if not unsaved: return
 	unsaved = false
 
@@ -106,6 +113,8 @@ func _on_tick():
 		if not script: return false
 		print("pretty.gd: ", script.resource_path, " 🎀")
 	else:
+		if not is_enabled_prettify_focus:
+			await get_tree().create_timer(1).timeout
 		for included in included_paths:
 			prettify_dir(included)
 
@@ -170,9 +179,20 @@ func prettify_file(path, since = 0):
 		_last_modified = max(_last_modified, modified)
 		return false
 
-	var file = FileAccess.open(path, FileAccess.WRITE)
+	var tmp = ".pretty" + str(randi()) + ".tmp"
+	var file = FileAccess.open(path + tmp, FileAccess.WRITE)
 	file.store_string(pretty)
 	file.close()
+	DirAccess.rename_absolute(path + tmp, path)
+	if FileAccess.file_exists(path + tmp):
+		DirAccess.remove_absolute(path)
+		DirAccess.rename_absolute(path + tmp, path)
+	if FileAccess.file_exists(path + tmp):
+		DirAccess.remove_absolute(path + tmp)
+		file = FileAccess.open(path, FileAccess.WRITE)
+		file.store_string(pretty)
+		file.close()
+
 	print("pretty.gd: ", path, " 🎀")
 	#if not _changed_scripts.has(path):
 		#_changed_scripts.push_back(path)
