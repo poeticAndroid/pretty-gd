@@ -186,11 +186,6 @@ func prettify_file(path, since = 0):
 	if FileAccess.file_exists(path + tmp):
 		DirAccess.remove_absolute(path)
 		DirAccess.rename_absolute(path + tmp, path)
-	if FileAccess.file_exists(path + tmp):
-		DirAccess.remove_absolute(path + tmp)
-		file = FileAccess.open(path, FileAccess.WRITE)
-		file.store_string(pretty)
-		file.close()
 
 	print("pretty.gd: ", path, " 🎀")
 	#if not _changed_scripts.has(path):
