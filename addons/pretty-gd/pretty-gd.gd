@@ -92,10 +92,11 @@ func _on_input(input: InputEvent):
 	if is_enabled_prettify_line and editor:
 		var ed = editor.get_base_editor()
 		var line = ed.get_caret_line()
-		if _last_line > line:
-			prettify_editor()
-		if _last_line < line:
-			prettify_editor(line)
+		if input.get_modifiers_mask() == 0:
+			if _last_line > line:
+				prettify_editor()
+			if _last_line < line:
+				prettify_editor(line)
 		_last_line = line
 
 

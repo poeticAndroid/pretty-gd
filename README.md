@@ -50,6 +50,11 @@ If you come across any other issues with using this software, please [let me kno
 
 ## Release Notes
 
+### 0.5
+
+ - Prettify Editor on Line Change don't trigger when modifier keys are pressed.
+
+
 ### 0.4
 
  - Tight prettification on line changes!
