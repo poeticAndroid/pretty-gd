@@ -10,7 +10,7 @@ var is_enabled_prettify_filesystem_on_save = false
 var is_enabled_prettify_filesystem_every_second = false
 
 var timer
-var unsaved
+var just_saved
 
 var _last_modified = 0
 var _last_line = 0
@@ -92,6 +92,11 @@ func _on_settings_changed():
 	else:
 		Prettifier.indent_str = "\t"
 
+	if settings.get_changed_settings().has(SETTINGS_PATH + "prettify_filesystem_every_second"):
+		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_on_save", false)
+	elif settings.get_changed_settings().has(SETTINGS_PATH + "prettify_filesystem_on_save"):
+		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_every_second", false)
+
 
 func _on_editor_script_changed(script = null):
 	if is_enabled_prettify_editor_on_focus:
@@ -115,16 +120,17 @@ func _on_input(input: InputEvent):
 
 
 func _on_scene_saved(path: String):
-	unsaved = true
+	just_saved = true
 
 
 func _on_tick():
-	if is_enabled_prettify_filesystem_every_second:
-		for included in included_paths:
-			prettify_dir(included)
+	if not just_saved:
+		if is_enabled_prettify_filesystem_every_second:
+			for included in included_paths:
+				prettify_dir(included)
+		return
 
-	if not unsaved: return
-	unsaved = false
+	just_saved = false
 
 	if is_enabled_prettify_editor_on_save and prettify_editor():
 		EditorInterface.save_scene()
