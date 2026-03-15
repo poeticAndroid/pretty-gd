@@ -10,10 +10,7 @@ var last_token = ""
 
 
 func prettify(_input: String) -> String:
-	input = _input
-	pos = 0
-	if not indent_str: indent_str = "\t"
-	tab_size = space_size(indent_str)
+	reset(_input)
 	var output = ""
 	var min_indent = 0
 	var max_indent = 80
@@ -34,6 +31,17 @@ func prettify(_input: String) -> String:
 			min_indent = 0
 			output += "\n"
 	return output.strip_edges(false, true)
+
+
+func reset(_input = input, _indent_str = indent_str, _tab_size = tab_size, _pos = 0):
+	input = _input
+	indent_str = _indent_str
+	tab_size = _tab_size
+	pos = _pos
+	if not indent_str: indent_str = "\t"
+	tab_size = space_size(indent_str)
+	var first_words = []
+	var last_token = ""
 
 
 func read_line(min_indent = 0, max_indent = 10):
