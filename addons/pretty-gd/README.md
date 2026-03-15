@@ -17,7 +17,7 @@ No Python! No binaries! No dependencies!
 
 ![Editor Settings window](./images/settings.png)
 
-5. Profit! Your GDScripts will be prettified automatically when you save.
+5. Profit! Your GDScripts will be prettified automatically! 🎀
 
 ### GDScript API
 
@@ -49,6 +49,12 @@ func _ready():
 If you come across any other issues with using this software, please [let me know](https://github.com/poeticAndroid/pretty-gd/issues).
 
 ## Release Notes
+
+### 0.6
+
+ - Option to prettify filesystem every second.
+ - Settings can be reverted to default values.
+
 
 ### 0.5
 

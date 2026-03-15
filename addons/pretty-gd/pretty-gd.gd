@@ -21,6 +21,7 @@ var Prettifier = preload("res://addons/pretty-gd/pretty.gd").new()
 
 func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
+	_migrate_settings()
 	_on_settings_changed()
 	EditorInterface.get_editor_settings().settings_changed.connect(_on_settings_changed)
 	EditorInterface.get_script_editor().editor_script_changed.connect(_on_editor_script_changed)
@@ -55,28 +56,33 @@ func _exit_tree() -> void:
 	settings.erase(SETTINGS_PATH + "prettify_filesystem_every_second")
 
 
-func _on_settings_changed():
+func _migrate_settings():
+	var default = {
+		"included_paths": "\n".join(included_paths),
+		"excluded_paths": "\n".join(excluded_paths),
+		"prettify_editor_on_focus": is_enabled_prettify_editor_on_focus,
+		"prettify_editor_on_line_change": is_enabled_prettify_editor_on_line_change,
+		"prettify_editor_on_save": is_enabled_prettify_editor_on_save,
+		"prettify_filesystem_on_save": is_enabled_prettify_filesystem_on_save,
+		"prettify_filesystem_every_second": is_enabled_prettify_filesystem_every_second,
+	}
+
 	var settings = EditorInterface.get_editor_settings()
 	settings.erase(SETTINGS_PATH + "pretty_editor_on_focus")
 	settings.erase(SETTINGS_PATH + "pretty_editor_on_save")
 	settings.erase(SETTINGS_PATH + "pretty_filesystem_on_save")
 
-	if not settings.has_setting(SETTINGS_PATH + "included_paths"):
-		settings.set_setting(SETTINGS_PATH + "included_paths", "\n".join(included_paths))
+	for key in default:
+		if not settings.has_setting(SETTINGS_PATH + key):
+			settings.set_setting(SETTINGS_PATH + key, default[key])
+		settings.set_initial_value(SETTINGS_PATH + key, default[key], false)
+
 	settings.add_property_info({ name = SETTINGS_PATH + "included_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
-	if not settings.has_setting(SETTINGS_PATH + "excluded_paths"):
-		settings.set_setting(SETTINGS_PATH + "excluded_paths", "\n".join(excluded_paths))
 	settings.add_property_info({ name = SETTINGS_PATH + "excluded_paths", type = TYPE_STRING, hint = PROPERTY_HINT_MULTILINE_TEXT })
-	if not settings.has_setting(SETTINGS_PATH + "prettify_editor_on_focus"):
-		settings.set_setting(SETTINGS_PATH + "prettify_editor_on_focus", is_enabled_prettify_editor_on_focus)
-	if not settings.has_setting(SETTINGS_PATH + "prettify_editor_on_line_change"):
-		settings.set_setting(SETTINGS_PATH + "prettify_editor_on_line_change", is_enabled_prettify_editor_on_line_change)
-	if not settings.has_setting(SETTINGS_PATH + "prettify_editor_on_save"):
-		settings.set_setting(SETTINGS_PATH + "prettify_editor_on_save", is_enabled_prettify_editor_on_save)
-	if not settings.has_setting(SETTINGS_PATH + "prettify_filesystem_on_save"):
-		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_on_save", is_enabled_prettify_filesystem_on_save)
-	if not settings.has_setting(SETTINGS_PATH + "prettify_filesystem_every_second"):
-		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_every_second", is_enabled_prettify_filesystem_every_second)
+
+
+func _on_settings_changed():
+	var settings = EditorInterface.get_editor_settings()
 
 	included_paths = settings.get_setting(SETTINGS_PATH + "included_paths").split("\n", false)
 	excluded_paths = settings.get_setting(SETTINGS_PATH + "excluded_paths").split("\n", false)
