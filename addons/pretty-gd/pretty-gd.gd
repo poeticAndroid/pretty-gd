@@ -7,6 +7,7 @@ var is_enabled_prettify_editor_on_focus = true
 var is_enabled_prettify_editor_on_line_change = false
 var is_enabled_prettify_editor_on_save = true
 var is_enabled_prettify_filesystem_on_save = false
+var is_enabled_prettify_filesystem_every_second = false
 
 var timer
 var unsaved
@@ -43,6 +44,7 @@ func _exit_tree() -> void:
 	if timer: timer.queue_free()
 	print("pretty.gd disabled 💩")
 
+	return
 	var settings = EditorInterface.get_editor_settings()
 	settings.erase(SETTINGS_PATH + "included_paths")
 	settings.erase(SETTINGS_PATH + "excluded_paths")
@@ -50,6 +52,7 @@ func _exit_tree() -> void:
 	settings.erase(SETTINGS_PATH + "prettify_editor_on_line_change")
 	settings.erase(SETTINGS_PATH + "prettify_editor_on_save")
 	settings.erase(SETTINGS_PATH + "prettify_filesystem_on_save")
+	settings.erase(SETTINGS_PATH + "prettify_filesystem_every_second")
 
 
 func _on_settings_changed():
@@ -72,6 +75,8 @@ func _on_settings_changed():
 		settings.set_setting(SETTINGS_PATH + "prettify_editor_on_save", is_enabled_prettify_editor_on_save)
 	if not settings.has_setting(SETTINGS_PATH + "prettify_filesystem_on_save"):
 		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_on_save", is_enabled_prettify_filesystem_on_save)
+	if not settings.has_setting(SETTINGS_PATH + "prettify_filesystem_every_second"):
+		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_every_second", is_enabled_prettify_filesystem_every_second)
 
 	included_paths = settings.get_setting(SETTINGS_PATH + "included_paths").split("\n", false)
 	excluded_paths = settings.get_setting(SETTINGS_PATH + "excluded_paths").split("\n", false)
@@ -79,6 +84,7 @@ func _on_settings_changed():
 	is_enabled_prettify_editor_on_line_change = settings.get_setting(SETTINGS_PATH + "prettify_editor_on_line_change")
 	is_enabled_prettify_editor_on_save = settings.get_setting(SETTINGS_PATH + "prettify_editor_on_save")
 	is_enabled_prettify_filesystem_on_save = settings.get_setting(SETTINGS_PATH + "prettify_filesystem_on_save")
+	is_enabled_prettify_filesystem_every_second = settings.get_setting(SETTINGS_PATH + "prettify_filesystem_every_second")
 
 	Prettifier.tab_size = settings.get_setting("text_editor/behavior/indent/size")
 	if settings.get_setting("text_editor/behavior/indent/type"):
@@ -113,6 +119,10 @@ func _on_scene_saved(path: String):
 
 
 func _on_tick():
+	if is_enabled_prettify_filesystem_every_second:
+		for included in included_paths:
+			prettify_dir(included)
+
 	if not unsaved: return
 	unsaved = false
 
