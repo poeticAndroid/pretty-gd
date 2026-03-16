@@ -98,11 +98,6 @@ func _on_settings_changed():
 	else:
 		Prettifier.indent_str = "\t"
 
-	if settings.get_changed_settings().has(SETTINGS_PATH + "prettify_filesystem_every_second"):
-		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_on_save", false)
-	elif settings.get_changed_settings().has(SETTINGS_PATH + "prettify_filesystem_on_save"):
-		settings.set_setting(SETTINGS_PATH + "prettify_filesystem_every_second", false)
-
 
 func _on_editor_script_changed(script = null):
 	if is_enabled_prettify_editor_on_focus:
