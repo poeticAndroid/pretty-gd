@@ -237,28 +237,26 @@ func space_size(whitespace):
 	if not tab_size: tab_size = 4
 	var sum = 0
 	for char in whitespace:
-		match char:
-			"\n":
-				sum = 0
-
-			"\t":
-				sum += 1
-				while sum % tab_size: sum += 1
-
-			" ":
-				sum += 1
-
-			_:
-				return sum
+		if char == "\n":
+			sum = 0
+		elif char == "\t":
+			sum += 1
+			while sum % tab_size: sum += 1
+		elif char == " ":
+			sum += 1
+		else:
+			return sum
 	return sum
 
 const keywords = ["if", "else", "elif", "for", "while", "break", "continue",
 	"pass", "return", "class", "class_name", "extends", "is", "as", "signal",
-	"static", "const", "enum", "var", "breakpoint", "yield", "in", "and", "or"]
+	"static", "const", "enum", "var", "breakpoint", "yield", "in", "and", "or"
+]
 const doubleblank = ["class", "func"]
 const longoperators = ["**", "<<", ">>", "==", "!=", ">=", "<=", "&&", "||",
 	"+=", "-=", "*=", "/=", "%=", "**=", "&=", "^=", "|=", "<<=", ">>=",
-	":=", "->"]
+	":=", "->"
+]
 const operator = "%&*+-/<=>?\\^|"
 const string = "r&^"
 const quote = "\"\'"
