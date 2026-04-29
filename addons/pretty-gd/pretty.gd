@@ -10,21 +10,21 @@ var last_token = ""
 
 
 func prettify(_input: String) -> String:
-	reset(_input)
+	self.reset(_input)
 	var output = ""
 	var min_indent = 0
 	var max_indent = 80
-	while not is_eof():
-		var line = read_line(min_indent, max_indent)
+	while not self.is_eof():
+		var line = self.read_line(min_indent, max_indent)
 		if line.strip_edges():
-			for first_token in first_words:
+			for first_token in self.first_words:
 				if doubleblank.has(first_token):
 					var i = output.rfind("\n\n")
 					if i > 0: output = output.substr(0, i) + "\n" + output.substr(i)
 			min_indent = 0
-			max_indent = ceil(space_size(line) / tab_size) + 2
+			max_indent = ceil(self.space_size(line) / self.tab_size) + 2
 			output += line + "\n"
-			if last_token == ":":
+			if self.last_token == ":":
 				max_indent += -1
 				min_indent = max_indent
 		elif not output.ends_with("\n\n"):
@@ -33,104 +33,107 @@ func prettify(_input: String) -> String:
 	return output.strip_edges(false, true)
 
 
-func reset(_input = input, _indent_str = indent_str, _tab_size = tab_size, _pos = 0):
-	input = _input
-	indent_str = _indent_str
-	tab_size = _tab_size
-	pos = _pos
-	if not indent_str: indent_str = "\t"
-	tab_size = space_size(indent_str)
-	var first_words = []
-	var last_token = ""
+func reset(_input = self.input, _indent_str = self.indent_str, _tab_size = self.tab_size, _pos = 0):
+	self.input = "" + _input
+	self.indent_str = _indent_str
+	self.tab_size = _tab_size
+	self.pos = _pos
+	if not self.indent_str: self.indent_str = "\t"
+	self.tab_size = self.space_size(self.indent_str)
+	self.first_words = []
+	self.last_token = ""
 
 
 func read_line(min_indent = 0, max_indent = 10):
-	var line = read_whitespace()
-	first_words = []
-	last_token = ""
-	if is_eol(): return read().strip_edges()
-	var indent = clamp(ceil((space_size(line) + tab_size - 1) / tab_size), min_indent, max_indent)
+	var line = self.read_whitespace()
+	self.first_words = []
+	self.last_token = ""
+	if self.is_eol(): return self.read().strip_edges()
+	#var indent = clamp(ceil((self.space_size(line) + self.tab_size - 1) / self.tab_size), min_indent, max_indent)
+	var indent = clamp(ceil(self.space_size(line) / self.tab_size), min_indent, max_indent)
 	line = ""
 	for i in range(indent):
-		line += indent_str
+		line += self.indent_str
 	var tokens = ["", "", ""]
-	while not is_eol():
-		tokens.push_back(read_token())
+	while not self.is_eol():
+		tokens.push_back(self.read_token())
 		while tokens.size() > 3: tokens.pop_front()
-		line += between(tokens[0], tokens[1], tokens[2]) + tokens.back()
-	first_words = get_first_words(line)
-	line += read()
+		line += self.between(tokens[0], tokens[1], tokens[2]) + tokens.back()
+	self.first_words = self.get_first_words(line)
+	line += self.read()
 	return line.strip_edges(false, true)
 
 
 func read_token():
 	var token = ""
-	read_whitespace()
-	if longoperators.has(peek(4)):
-		token += read(4)
-	elif longoperators.has(peek(3)):
-		token += read(3)
-	elif longoperators.has(peek(2)):
-		token += read(2)
-	elif peek() == "#":
-		token += read_until("\n")
-	elif peek() == "@" and identifier.containsn(peek(1, 1)):
-		token += read() + read_while(identifier)
-	elif peek() == "." and number.containsn(peek(1, 1)):
-		token += read_number()
-	elif number.containsn(peek()):
-		token += read_number()
-	elif string.containsn(peek()) and quote.containsn(peek(1, 1)):
-		token += read_string()
-	elif quote.containsn(peek()):
-		token += read_string()
-	elif identifier.containsn(peek()):
-		token += read_while(identifier)
-	elif node.containsn(peek()):
-		token += read_node()
+	self.read_whitespace()
+	if self.peek() == "\n":
+		token += self.read() + self.read_whitespace()
+	elif longoperators.has(self.peek(4)):
+		token += self.read(4)
+	elif longoperators.has(self.peek(3)):
+		token += self.read(3)
+	elif longoperators.has(self.peek(2)):
+		token += self.read(2)
+	elif self.peek() == "#":
+		token += self.read_until("\n")
+	elif self.peek() == "@" and identifier.containsn(self.peek(1, 1)):
+		token += self.read() + self.read_while(identifier)
+	elif self.peek() == "." and number.containsn(self.peek(1, 1)):
+		token += self.read_number()
+	elif number.containsn(self.peek()):
+		token += self.read_number()
+	elif string.containsn(self.peek()) and quote.containsn(self.peek(1, 1)):
+		token += self.read_string()
+	elif quote.containsn(self.peek()):
+		token += self.read_string()
+	elif identifier.containsn(self.peek()):
+		token += self.read_while(identifier)
+	elif node.containsn(self.peek()):
+		token += self.read_node()
 	else:
-		token += read()
-	read_whitespace()
+		token += self.read()
+	self.read_whitespace()
 	if not token.begins_with("#"):
-		last_token = token
+		self.last_token = token
 	return token
 
 
 func read_node():
-	var token = read().to_lower()
-	if quote.containsn(peek()):
-		token += read_string()
+	var token = self.read().to_lower()
+	if quote.containsn(self.peek()):
+		token += self.read_string()
 	else:
-		token += read_while(nodepath)
+		token += self.read_while(nodepath)
 	return token
 
 
 func read_string():
 	var token = ""
-	var quot = read().to_lower()
+	var quot = self.read().to_lower()
 	if string.containsn(quot):
 		token += quot
-		quot = read()
-	if peek(2) == quot + quot:
-		quot += read(2)
+		quot = self.read()
+	if self.peek(2) == quot + quot:
+		quot += self.read(2)
 	token += quot
-	while not is_eof() && peek(quot.length()) != quot:
-		if peek() == "\\": token += read(2)
-		else: token += read(1)
+	while not self.is_eof() && self.peek(quot.length()) != quot:
+		if self.peek() == "\\": token += self.read(2)
+		else: token += self.read(1)
 
-	token += read(quot.length())
+	token += self.read(quot.length())
 	return token
 
 
 func read_number():
 	var token = ""
-	var reg = peek()
-	while reg.containsn(peek()):
-		token += read().to_lower()
+	var reg = self.peek()
+	while reg.containsn(self.peek()):
+		token += self.read().to_lower()
 		if token == ".": token = "0."
 		if token == "0":
 			reg = ".0123456789_bex"
-			if "0123456789".containsn(peek()):
+			if "0123456789".containsn(self.peek()):
 				token = ""
 		elif token.begins_with("0x"): reg = "0123456789_abcdef"
 		elif token.begins_with("0b"): reg = "01_"
@@ -151,49 +154,49 @@ func read_number():
 
 func read_word():
 	var token = ""
-	while peek().strip_edges():
-		token += read()
+	while self.peek().strip_edges():
+		token += self.read()
 	return token
 
 
 func read_whitespace():
 	var token = ""
-	while not is_eol() and not peek().strip_edges():
-		token += read()
+	while not self.is_eol() and not self.peek().strip_edges():
+		token += self.read()
 	return token
 
 
 func read_while(charset):
 	var output = ""
-	while charset.containsn(peek()) or (charset.containsn("ø") and peek().unicode_at(0) > 127):
-		output += read()
+	while charset.containsn(self.peek()) or (charset.containsn("ø") and self.peek().unicode_at(0) > 127):
+		output += self.read()
 	return output
 
 
 func read_until(delimiter):
 	var output = ""
-	while peek(delimiter.length()) != delimiter and not is_eof():
-		output += read()
+	while self.peek(delimiter.length()) != delimiter and not self.is_eof():
+		output += self.read()
 	return output
 
 
 func read(len = 1):
-	if is_eof(): return ""
-	pos += len
-	return input.substr(pos - len, len)
+	if self.is_eof(): return ""
+	self.pos += len
+	return self.input.substr(self.pos - len, len)
 
 
 func peek(len = 1, skip = 0):
-	if is_eof(): return ""
-	return input.substr(pos + skip, len)
+	if self.is_eof(): return ""
+	return self.input.substr(self.pos + skip, len)
 
 
 func is_eol():
-	return is_eof() or peek() == "\n"
+	return self.is_eof() or self.peek() == "\n"
 
 
 func is_eof():
-	return pos >= input.length()
+	return self.pos >= self.input.length()
 
 
 func between(token0, token1, token2):
@@ -234,14 +237,14 @@ func get_first_words(line):
 
 func space_size(whitespace):
 	if not whitespace: return 0
-	if not tab_size: tab_size = 4
+	if not self.tab_size: self.tab_size = 4
 	var sum = 0
 	for char in whitespace:
 		if char == "\n":
 			sum = 0
 		elif char == "\t":
 			sum += 1
-			while sum % tab_size: sum += 1
+			while sum % self.tab_size: sum += 1
 		elif char == " ":
 			sum += 1
 		else:
