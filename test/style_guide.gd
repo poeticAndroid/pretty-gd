@@ -713,8 +713,8 @@ const Weapon = preload("res://weapon.gd")
 var particle_effect
 func load_level():
 
-	# Prepend a single underscore (\_) to virtual methods functions the user must
-	# override, private functions, and private variables:
+# Prepend a single underscore (\_) to virtual methods functions the user must
+# override, private functions, and private variables:
 
 # ::
 
@@ -722,10 +722,10 @@ func load_level():
 var _counter = 0
 func _recalculate_path():
 
-	# Signals
-	# ~~~~~~~
+# Signals
+# ~~~~~~~
 
-	# Use the past tense to name signals:
+# Use the past tense to name signals:
 
 # ::
 
