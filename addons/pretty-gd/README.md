@@ -50,6 +50,11 @@ If you come across any other issues with using this software, please [let me kno
 
 ## Release Notes
 
+### 2.0.1
+
+	- Cleanup and migrate old settings on first install.
+
+
 ### 2.0.0
 
 	- Simplified settings a bit.
