@@ -50,6 +50,13 @@ If you come across any other issues with using this software, please [let me kno
 
 ## Release Notes
 
+### 2.0.2
+
+	- Simplified settings a bit.
+	- Cleanup and migrate old settings on first install.
+	- Option to erase old settings on every startup.
+
+
 ### 0.6.1
 
  - Fixed bug that reset "prettify_filesystem_on_save" and "prettify_filesystem_every_second" on startup.

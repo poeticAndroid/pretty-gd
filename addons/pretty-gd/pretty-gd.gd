@@ -57,22 +57,24 @@ func _define_settings():
 	}
 
 	var _SETTINGS_PATH = "pretty-gd/"
-	if settings.has_setting(_SETTINGS_PATH + "included_paths") and not settings.has_setting(SETTINGS_PATH + "included_paths"):
+	if settings.has_setting(_SETTINGS_PATH + "included_paths"):
 		print("old settings found!")
-		settings.set_setting(SETTINGS_PATH + "included_paths", settings.get_setting(_SETTINGS_PATH + "included_paths"))
-		settings.set_setting(SETTINGS_PATH + "excluded_paths", settings.get_setting(_SETTINGS_PATH + "excluded_paths"))
+		settings.set_setting(SETTINGS_PATH + "erase_old_pretty-gd_settings", false)
+		if not settings.has_setting(SETTINGS_PATH + "included_paths"):
+			settings.set_setting(SETTINGS_PATH + "included_paths", settings.get_setting(_SETTINGS_PATH + "included_paths"))
+			settings.set_setting(SETTINGS_PATH + "excluded_paths", settings.get_setting(_SETTINGS_PATH + "excluded_paths"))
 
-		settings.set_setting(SETTINGS_PATH + "prettify_on_save", settings.get_setting(_SETTINGS_PATH + "prettify_editor_on_save") or settings.get_setting(_SETTINGS_PATH + "prettify_filesystem_on_save"))
-		settings.set_setting(SETTINGS_PATH + "prettify_editor", settings.get_setting(_SETTINGS_PATH + "prettify_editor_on_line_change"))
-		settings.set_setting(SETTINGS_PATH + "prettify_filesystem", settings.get_setting(_SETTINGS_PATH + "prettify_filesystem_every_second") or settings.get_setting(_SETTINGS_PATH + "prettify_filesystem_on_save"))
+			settings.set_setting(SETTINGS_PATH + "prettify_on_save", settings.get_setting(_SETTINGS_PATH + "prettify_editor_on_save") or settings.get_setting(_SETTINGS_PATH + "prettify_filesystem_on_save"))
+			settings.set_setting(SETTINGS_PATH + "prettify_editor", settings.get_setting(_SETTINGS_PATH + "prettify_editor_on_line_change"))
+			settings.set_setting(SETTINGS_PATH + "prettify_filesystem", settings.get_setting(_SETTINGS_PATH + "prettify_filesystem_every_second") or settings.get_setting(_SETTINGS_PATH + "prettify_filesystem_on_save"))
 
-		settings.erase(_SETTINGS_PATH + "included_paths")
-		settings.erase(_SETTINGS_PATH + "excluded_paths")
-		settings.erase(_SETTINGS_PATH + "prettify_editor_on_focus")
-		settings.erase(_SETTINGS_PATH + "prettify_editor_on_line_change")
-		settings.erase(_SETTINGS_PATH + "prettify_editor_on_save")
-		settings.erase(_SETTINGS_PATH + "prettify_filesystem_on_save")
-		settings.erase(_SETTINGS_PATH + "prettify_filesystem_every_second")
+			settings.erase(_SETTINGS_PATH + "included_paths")
+			settings.erase(_SETTINGS_PATH + "excluded_paths")
+			settings.erase(_SETTINGS_PATH + "prettify_editor_on_focus")
+			settings.erase(_SETTINGS_PATH + "prettify_editor_on_line_change")
+			settings.erase(_SETTINGS_PATH + "prettify_editor_on_save")
+			settings.erase(_SETTINGS_PATH + "prettify_filesystem_on_save")
+			settings.erase(_SETTINGS_PATH + "prettify_filesystem_every_second")
 
 	for key in default:
 		if not settings.has_setting(SETTINGS_PATH + key):
@@ -95,6 +97,17 @@ func _on_settings_changed():
 
 	if is_enabled_prettify_filesystem and settings_change_count > 1:
 		settings.set_setting("text_editor/behavior/files/auto_reload_scripts_on_external_change", true)
+
+	if settings.get_setting(SETTINGS_PATH + "erase_old_pretty-gd_settings"):
+		settings.set_initial_value(SETTINGS_PATH + "erase_old_pretty-gd_settings", false, false)
+		var _SETTINGS_PATH = "pretty-gd/"
+		settings.erase(_SETTINGS_PATH + "included_paths")
+		settings.erase(_SETTINGS_PATH + "excluded_paths")
+		settings.erase(_SETTINGS_PATH + "prettify_editor_on_focus")
+		settings.erase(_SETTINGS_PATH + "prettify_editor_on_line_change")
+		settings.erase(_SETTINGS_PATH + "prettify_editor_on_save")
+		settings.erase(_SETTINGS_PATH + "prettify_filesystem_on_save")
+		settings.erase(_SETTINGS_PATH + "prettify_filesystem_every_second")
 
 	Prettifier.tab_size = settings.get_setting("text_editor/behavior/indent/size")
 	if settings.get_setting("text_editor/behavior/indent/type"):
