@@ -54,7 +54,7 @@ If you come across any other issues with using this software, please [let me kno
 
 	- Simplified settings a bit.
 	- Cleanup and migrate old settings on first install.
-	- Option to erase old settings on demand.
+	- Option to erase old settings on startup.
 
 
 ### 0.6.1

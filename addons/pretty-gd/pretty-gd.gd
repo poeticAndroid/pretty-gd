@@ -59,7 +59,7 @@ func _define_settings():
 	var _SETTINGS_PATH = "pretty-gd/"
 	if settings.has_setting(_SETTINGS_PATH + "included_paths"):
 		print("old settings found!")
-		settings.set_setting(SETTINGS_PATH + "erase_old_pretty-gd_settings", false)
+		settings.set_setting(SETTINGS_PATH + "erase_old_pretty-gd_settings", bool(settings.get_setting(SETTINGS_PATH + "erase_old_pretty-gd_settings")))
 		if not settings.has_setting(SETTINGS_PATH + "included_paths"):
 			settings.set_setting(SETTINGS_PATH + "included_paths", settings.get_setting(_SETTINGS_PATH + "included_paths"))
 			settings.set_setting(SETTINGS_PATH + "excluded_paths", settings.get_setting(_SETTINGS_PATH + "excluded_paths"))
