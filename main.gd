@@ -11,6 +11,7 @@ func _ready() -> void:
 	file = FileAccess.open("res://addons/pretty-gd/LICENSE", FileAccess.WRITE)
 	file.store_string(FileAccess.get_file_as_string("res://LICENSE"))
 	file.close()
+	return
 
 	print(Prettifier.prettify(FileAccess.get_file_as_string("res://addons/pretty-gd/pretty.gd")))
 	var ascii = ""
