@@ -50,11 +50,16 @@ If you come across any other issues with using this software, please [let me kno
 
 ## Release Notes
 
+### 2.0.5
+
+ - Version parity with [pretty-gd-js](https://github.com/poeticAndroid/pretty-gd-js) and [pretty-gd-vs](https://github.com/poeticAndroid/pretty-gd-vs).
+
+
 ### 2.0.2
 
-	- Simplified settings a bit.
-	- Cleanup and migrate old settings on first install.
-	- Option to erase old settings on startup.
+ - Simplified settings a bit.
+ - Cleanup and migrate old settings on first install.
+ - Option to erase old settings on startup.
 
 
 ### 0.6.1
