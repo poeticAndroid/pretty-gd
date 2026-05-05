@@ -11,7 +11,7 @@ No Python! No binaries! No dependencies!
 ### Godot editor
 
 1. Backup or commit your code first, just in case! 
-2. Install the plugin in the `res://addons/` folder.
+2. Install [the plugin](https://godotengine.org/asset-library/asset/4855) in the `res://addons/` folder.
 3. Enable the plugin in project settings.
 4. Adjust editor settings to your liking.
 
