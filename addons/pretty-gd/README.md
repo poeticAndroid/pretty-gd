@@ -15,7 +15,7 @@ No Python! No binaries! No dependencies!
 3. Enable the plugin in project settings.
 4. Adjust editor settings to your liking.
 
-![Editor Settings window](./images/settings.png)
+![Editor Settings window](./images/editor_settings.png)
 
 5. Profit! Your GDScripts will be prettified automatically! 🎀
 
